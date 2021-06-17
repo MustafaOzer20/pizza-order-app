@@ -1,0 +1,40 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Ürünler</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/products.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+
+{% load static %}
+<div class="col-md-6 offset-md-3">
+<table class="">
+  <thead>
+    <tr>
+      <th scope="col">Pizza</th>
+      <th scope="col">İsim</th>
+      <th scope="col">Kategori</th>
+      <th scope="col">Fiyat</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for id,title,contents,price,imageUrl,category in pizzas %}
+      <tr>
+        <th scope="row"><img src="{{imageUrl}}" alt=""></th>
+        <td>{{title|truncatechars:10}}</td>
+        <td>{{category|truncatechars:10}}</td>
+        <td>{{price}} TL</td>
+        <td><a href="{% url 'user:productsEdit' id %}"><i class="fas fa-edit"></i></a></td>
+        <td><a href="{% url 'user:productsDelete' id %}"><i class="fas fa-trash"></i></a></td>
+      </tr>
+      {% endfor %}
+    
+  </tbody>
+</table></div>
+{% endblock body %}

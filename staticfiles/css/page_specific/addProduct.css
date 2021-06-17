@@ -1,0 +1,18 @@
+.log-container{
+    padding: 20px 80px 80px 80px;
+    border-radius: 30px;
+    background: #fff;
+}
+.log-container img{
+    height: 150px;
+    object-fit: cover;
+}
+.btn-warning{
+    color: #fff;
+    background: orange;
+}
+.btn-warning:hover{
+    background: #fff;
+    color: orange;
+    cursor: pointer;
+}

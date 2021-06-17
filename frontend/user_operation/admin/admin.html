@@ -1,0 +1,38 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+
+{% block baslik %}
+    <title>PizzaS | Kontrol Paneli</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/admin.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+<div id="adminDashboard" class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="log-container">
+            <div class="col-md-6 offset-md-3">
+            <img src="{% static 'media/pizza.png' %}" alt=""></div>
+            <div class="col">
+                <span style="font-size:13px;">Yıllık Kazanç : {{yearly}} TL</span> <br>
+               <span style="font-size:13px;">Aylık Kazanç : {{monthly}} TL</span> <br>
+               <span style="font-size:13px;">Günlük Kazanç : {{daily}} TL</span> <br>
+            </div>
+            <div class="col-md-6 offset-md-3">
+            <a class="admin-btn" href="{% url 'user:orders' %}">Gelen Siparişler</a></div>
+            <div class="col-md-6 offset-md-3">
+                <a class="admin-btn" href="{% url 'user:products' %}">Ürünleri Düzenle</a>
+            </div>
+            <div class="col-md-6 offset-md-3">
+                <a class="admin-btn" href="{% url 'user:productsAdd' %}">Ürün Ekle</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

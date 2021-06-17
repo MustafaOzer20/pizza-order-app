@@ -1,0 +1,73 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Siparişlerim</title>
+    
+    <link rel="stylesheet" href="{% static 'css/page_specific/myorders.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+{% if orders %}
+    {% for ord in orders %}
+        <div class="col-md-6 offset-md-3">
+            <div class="order-card">
+                <div id="result">
+                    <div class="col"><div class="text-muted">{{ord.9}}</div></div>
+                    <div class="col"><div class="result">Toplam {{ord.6}} TL</div></div>
+                </div>
+                <div class="col-md-6 offset-md-3">
+                    <div class="order-status">
+                    {% if ord.10 == 3 %}
+                        <div class="col" id="status-completed"><i class="fas fa-check"></i><span>Teslim Edildi</span></div>
+                    {% elif ord.10 == 2 %}
+                        <div class="col" id="status-ready"><i class="fas fa-biking"></i><span>Siparişiniz Yolda</span></div>
+                    {% else %}
+                        <div class="col" id="status-not"><i class="fas fa-stopwatch"></i><span>Hazırlanıyor</span></div>
+                    {% endif %}</div>
+                </div>
+        {% for item in ord.3 %}
+        <div id="pizza-item" class="row border-top border-bottom">
+            <div class="row main align-items-center">
+                <div class="col-2"><img class="img-fluid" src="{{item.2}}"></div>
+                    <div class="order-content">
+                        <div id="title" class="col">
+                            <div class="row"><h5>{{item.0|truncatechars:10}}</h5></div>
+                        </div>
+                    </div>
+                    <div class="order-content">
+                        {% if item.3 == 3 %}
+                            <div class="col">Büyük Boy</div>
+                        {% elif item.3 == 2 %}
+                            <div class="col">Orta Boy</div>
+                        {% else %}
+                            <div class="col">Küçük Boy</div>
+                        {% endif %}
+                    </div>
+                    <div class="order-content">
+                        <div class="col">{{item.4}} adet</div>
+                    </div>
+                    <div class="order-content">
+                        <div class="col">{{item.1}} TL </div>
+                    </div>
+                    </div>
+                </div>
+             <hr>
+        {% endfor %}
+    </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="empty-list-container">
+    <div class="empty-list">
+        <center><div class="circle"><i class="fas fa-history"></i></div></center>
+        <center><p>Sipariş Kaydınız Bulunmamaktadır.</p></center>
+        <center><a class="goto-back" href="{% url 'pizzas:pizzas' %}">Hemen Sipariş Ver</a></center>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock body %}

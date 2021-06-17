@@ -1,0 +1,253 @@
+<style>
+  nav i{
+      color: orange;
+      font-size: 25px;
+      margin-right: 20px;
+    }
+  nav {
+    z-index: 9999999999999;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 8vh;
+    background-color: #fff;
+    font-family: "Poppins", sans-serif;
+}
+
+.logo {
+    color: rgb(226, 226, 226);
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-size: 20px;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-around;
+    width: 70%;
+}
+
+.nav-links li {
+    list-style: none;
+}
+
+.nav-links a {
+    color: orange;
+    text-decoration: none;
+    letter-spacing: 3px;
+    font-weight: bold;
+    font-size: 14px;
+}
+.nav-links i{
+    font-size: 20px;
+}
+.burger {
+    display: none;
+}
+
+.burger div {
+    width: 25px;
+    height: 3px;
+    background-color: orange;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+@media screen and (max-width: 1300px) {
+    .nav-links {
+        width: 60%;
+    }
+    .nav-links {
+        position: fixed;
+        right: 0px;
+        height: 100vh;
+        top: 8vh;
+        background-color: orange;
+        justify-content: space-evenly;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        transform: translateX(100%);
+        transition: transform 0.5s ease-in;
+    }
+    .burger {
+        display: block;
+        cursor: pointer;
+        justify-content: right;
+    }
+    .nav-links a {
+        color: #fff;
+    }.nav-links i {
+        color: #fff;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+    .logo{
+      visibility: none;
+    }
+    
+    
+    
+    .nav-links li {
+        opacity: 0;
+    }
+    
+    
+}
+
+.nav-active {
+        transform: translateX(0%);
+}
+
+@keyframes navLinkFade {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toggle .line1 {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.toggle .line2 {
+    opacity: 0;
+}
+
+.toggle .line3 {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.dropdown i{
+    font-size: 14px;
+}
+
+.dropbtn {
+  background-color: #fff;
+  color: orange;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  overflow: auto;
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: orange;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+</style>
+{% load static %}
+
+<nav>
+  <div class="logo">
+    <a href="{% url 'home' %}"><img src="{% static 'media/pizza.png' %}" width="60" height="60"></a>
+  </div>
+  <ul class="nav-links">
+      <li><a href="{% url 'pizzas:pizzas' %}">Tüm Pizzalar</a></li>
+      <li><a href="{% url 'pizzas:cazip' %}">Cazip Pizzalar</a></li>
+      <li><a href="{% url 'pizzas:special' %}">Özel Pizzalar</a></li>
+      <li><a href="{% url 'pizzas:bolmalzemeli' %}">Bol Malzemeli Pizzalar</a></li>
+      <li><a href="{% url 'pizzas:gurme' %}">Gurme Pizzalar</a></li>
+  </ul>
+  <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+  </div>
+  {% if request.user.is_authenticated %}
+    <div class="dropdown">
+        <button onclick="myFunction()" class="dropbtn">{{request.user.username}}<i onclick="myFuction()" class="fas fa-caret-down"></i></button>
+        <div id="myDropdown" class="dropdown-content">
+           <a href="{% url 'basket:basketItems' %}"><i class="fas fa-shopping-cart"></i>Sepetim</a>
+           <a href="{% url 'user:myorders' %}"><i class="fas fa-history"></i>Siparişlerim</a>
+            <a href="{% url 'user:profile' %}"><i class="fas fa-user"></i>Hesabım</a>
+            {% if request.user.is_superuser %}
+                <a href="{% url 'user:dashboard' %}"><i class="fas fa-user-shield"></i>Admin</a>
+            {% endif %}
+            <a href="{% url 'user:logout' %}"><i class="fas fa-sign-out-alt"></i>Çıkış Yap</a>
+        </div>
+    </div>
+    {% else %}
+      <a class="nav-login" href="{% url 'user:login' %}">Giriş Yap</a>
+    {% endif %}
+</nav>
+<script>
+    /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+    }
+    
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+    </script>
+
+<script>
+ function navSlide() {
+    const burger = document.querySelector(".burger");
+    const nav = document.querySelector(".nav-links");
+    const navLinks = document.querySelectorAll(".nav-links li");
+    
+    burger.addEventListener("click", () => {
+        //Toggle Nav
+        nav.classList.toggle("nav-active");
+        
+        //Animate Links
+        navLinks.forEach((link, index) => {
+            if (link.style.animation) {
+                link.style.animation = ""
+            } else {
+                link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.5}s`;
+            }
+        });
+        //Burger Animation
+        burger.classList.toggle("toggle");
+    });
+    
+}
+
+navSlide();
+</script>

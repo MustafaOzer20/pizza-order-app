@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" >
+    <link rel='shortcut icon' type='image/x-icon' href="{% static 'media/pizza.png' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        body{
+            background: #eee;
+        }
+        ::-webkit-scrollbar{
+            width: 11px;
+            background: #eee;
+            opacity: 0.1;
+        }
+
+        ::-webkit-scrollbar-thumb{
+            background: orange;
+            border-radius: 6px;
+            border: 3px #eee solid;
+        }
+        ::-webkit-scrollbar-thumb:hover{
+            background: rgb(0, 160, 255);
+        }
+        .container{
+            margin-top: 100px;
+        }
+    </style>
+    
+    {% block baslik %}
+    <title>PizzaS</title>
+    {% endblock baslik %}
+</head>
+<body>
+
+    {% include 'includes/navbar.html' %}
+
+    <div style = "margin-bottom:0;" class="container">
+        {% if messages %}
+                {% for message in messages %}
+
+                    {% if message.tags == "info" %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+        {% endif %}
+        {% block body %}
+
+        {% endblock body %}
+    </div>
+    <!--
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+    <br>
+    <div style="margin-bottom: 25px;"></div>
+</body>
+{% include 'includes/footer.html' %}
+</html>

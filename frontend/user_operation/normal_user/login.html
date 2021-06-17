@@ -1,0 +1,48 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Giriş</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/addProduct.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="log-container">
+            <div class="col-md-6 offset-md-3">
+            <img src="{% static 'media/pizza.png' %}" alt=""></div>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{form | crispy}}
+                <br>
+                <button type="submit" class="btn btn-warning">Giriş Yap</button>
+            </form>
+            <br>
+            <a href="{% url 'user:register' %}">Hesabın Yok mu? Kayıt ol</a>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+<!--
+    <div class="row">
+  <div class="col-md-6 offset-md-3">
+  <h2>Giriş Yap</h2> <hr>
+  <form method="POST">
+    {% csrf_token %}
+    {{form | crispy}}
+    <br>
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+</form>
+<a href="/user/register">Kayıt ol</a>
+</div>
+</div>
+-->

@@ -1,0 +1,111 @@
+<style>
+    footer{
+    background: #fff;
+    color: orange;
+    padding: 60px 0;
+    margin-top: 100px;
+}
+footer .container{
+    width: 100%;
+    max-width: 1100px;
+    padding: 0 20px;
+    margin: 0 auto;
+}
+ footer li{
+    list-style: none;
+    line-height: 2;
+}
+footer a{
+    text-decoration: none;
+    color: #aaa;
+
+}
+footer a#author{
+    transition: all 3ms ease;
+}
+footer a:hover{
+    color: orange;
+}
+footer a#author:hover{
+    font-size: 20px;
+}
+.footer-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+.items{
+    flex-basis: 20%;
+}
+.items .logo{
+    text-transform: capitalize;
+    font-size: 1.4em;
+    color: orange;
+    opacity: 0.6;
+}
+.items p{
+    margin: 1.2em 0;
+}
+
+.items h3{
+    position: relative;
+    font-size: 1.3em;
+    margin-bottom: 1rem;
+    color: orange;
+}
+.items h3::after{
+    content:"";
+    position: absolute;
+    width: 40px;
+    height: 3px;
+    background: #ccc;
+    bottom: -4px;
+    left: 0;
+}
+footer hr{
+    color: #bbb;
+
+}
+footer .end{
+    text-align: center;
+    padding: 20px 0 0 0;
+}
+@media (max-width:640px){
+    .items{
+    flex-basis: 80%;
+    margin: auto;
+}
+
+}
+</style>
+{% load static %}
+<footer>
+    <div class="container">
+        <div class="footer-content">
+
+            <div class="items">
+                <h3> Sipariş Hattı</h3>
+                <ul>
+                    <li>444 XX XX</li>
+                </ul>                          
+            </div>
+
+            <div class="items">
+                <h3>Şikayet/Öneri Hattı</h3>
+            <ul>
+                <li>0850 XXX XX XX</li>
+            </ul>
+            </div>
+            <div class="items">
+                <h3>Mail</h3>
+                <ul>
+                    <li>info@pizzaS.com.tr</li>
+                </ul>
+            </div>
+
+        </div>
+        <hr>
+        <p class="end">Copyright © 2021 by <a id="author" href="https://mustafaozerr.com" target="_blank">Mustafa Özer</a>. All rights reserved.</p>
+    </div>
+</footer>

@@ -1,0 +1,98 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Siparişler</title>
+    
+    <link rel="stylesheet" href="{% static 'css/page_specific/orders.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+{% load crispy_forms_tags %}  
+{% if orders %}
+    {% for ord in orders %}
+        <div class="col-md-6 offset-md-3">
+            <div class="order-card">
+                <div class="row" id="orderInfo">
+                    OrderId değeri: {{ord.0}} <br>
+                        <div class="status">
+                        {% if ord.10 == 3 %}
+                           Şuanki Durum : <span style="color: green;">Teslim Edildi.</span>
+                        {% elif ord.10 == 2 %}
+                            Şuanki Durum : <span style="color: rgb(0, 47, 255);">Yolda.</span>
+                        {% else  %}
+                            Şuanki Durum : <span style="color: rgb(238, 255, 0);">Hazırlanıyor.</span>       
+                        {% endif %}</div>
+                    
+                </div>
+                <div class="row" id="result">
+                <div>
+                    <div class="col"><div class="text-muted">{{ord.9}}</div></div>
+                    <div class="col"><div class="result">Toplam {{ord.6}} TL</div></div>
+                </div>
+                </div>
+                <div class="col-md-6 offset-md-3">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{form | crispy}}
+                        <button class="btn btn-warning" type="submit">Durumu Güncelle</button>
+                    </form>
+                </div>
+        {% for item in ord.3 %}
+        <div id="pizza-item" class="row border-top border-bottom">
+            <div class="row main align-items-center">
+                <div class="col-2"><img class="img-fluid" src="{{item.2}}"></div>
+                    <div class="order-content">
+                        <div id="title" class="col">
+                            <div class="row"><h5>{{item.0|truncatechars:10}}</h5></div>
+                        </div>
+                    </div>
+                    <div class="order-content">
+                        {% if item.3 == 3 %}
+                            <div class="col">Büyük Boy</div>
+                        {% elif item.3 == 2 %}
+                            <div class="col">Orta Boy</div>
+                        {% else %}
+                            <div class="col">Küçük Boy</div>
+                        {% endif %}
+                    </div>
+                    <div class="order-content">
+                        <div class="col">{{item.4}} adet</div>
+                    </div>
+                    <div class="order-content">
+                        <div class="col">{{item.1}} TL </div>
+                    </div>
+                    </div>
+                </div>
+             <hr>
+        {% endfor %}
+        <div class="author">
+            <span>Müşterinin Adı:</span> {{user.0}} {{user.1}} <br>
+            <span>Adres:</span> {{ord.7}}<br>
+            <span>Tel No:</span> {{ord.8}}<br> 
+            <span>Müşteri Notu:</span> {{ord.11}}<br> 
+            {% if ord.12 == '1' %}
+                <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Nakit)<br> 
+            {% elif ord.12 == '2' %}
+                <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Kart)<br> 
+            {% else %}
+                <span>Ödeme Yöntemi:</span> Online Ödeme<br>
+            {% endif %}
+            
+        </div>
+    </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="empty-list-container">
+    <div class="empty-list">
+        <center><div class="circle"><i class="fas fa-history"></i></div></center>
+        <center><p>Sipariş Kaydı Bulunmamaktadır.</p></center>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock body %}

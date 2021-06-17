@@ -1,0 +1,30 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | {{title}}</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+
+    <div class="pizza-list">
+    <div class="grid-container">
+    {% for id, name, contents, price, imageUrl, category in pizzas %}
+    <div class="grid-item">
+        <div class="pizza-card">
+          <img src={{imageUrl}}></img>
+          <div class="pizza"> 
+            <h2>{{name}}</h2>
+            <span class="contents">{{contents}}</span>
+            <span class="price">{{price}} TL</span>
+            <a href="{% url 'pizzas:basket' id %}">Sipariş Ver</a>
+          </div>
+        </div>
+        </div>
+    {% endfor %}
+    </div></div>
+
+{% endblock body %}

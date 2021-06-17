@@ -1,0 +1,122 @@
+.empty-list i{
+    font-size: 50px;
+}
+.empty-list .circle{
+    padding: 65px;
+    width: 200px;
+    background: #fff;
+    color: orange;
+    border-radius: 50%;
+}
+.empty-list p{
+    margin-top: 20px;
+    margin-bottom: 40px;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(0, 65, 117);;
+}
+.goto-back{
+    padding: 20px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid orange;
+    color: orange;
+    transition: color 3ms ease;
+}
+.goto-back:hover{
+    background: orange;
+    color: #fff;
+}
+div.col-2{
+    width: 200px;
+}
+.img-fluid{
+    height: 100px;
+    width: 200px;
+    object-fit: cover;
+}
+.order-card{
+    border-radius: 20px;
+    background: #fff;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+#result{
+    padding-bottom: 10px;
+}
+#result .result{
+    color: rgb(0, 65, 117);;
+    font-weight: 500;
+}
+#status-not{
+    justify-content: center;
+    margin: 8px;
+    padding: 10px;
+    border-radius: 35px;
+    background: orange;
+    color: #fff;
+    font-size: 18px;
+}
+#status-not i{
+    font-size:25px;
+    margin-right: 13px;
+}
+#status-ready{
+    justify-content: center;
+    margin: 8px;
+    padding: 10px 7px 10px 7px;
+    border-radius: 35px;
+    background: rgb(0, 65, 117);;
+    color: #fff;
+    font-size: 18px;
+}
+#status-ready i{
+    font-size:25px;
+    margin-right: 13px;
+}
+#status-completed{
+    justify-content: center;
+    margin: 8px;
+    padding: 10px 7px 10px 7px;
+    border-radius: 35px;
+    background: rgb(0, 209, 63);;
+    color: #fff;
+    font-size: 18px;
+}
+#status-completed i{
+    font-size:25px;
+    margin: 0 13px 0 10px;
+}
+.main .title{
+    font-weight: 600;
+}
+
+@media (max-width:1206px){
+    .order-status span{
+        font-size: 15px;
+    }
+}
+
+@media (max-width:516px){
+    .order-status{
+        padding-bottom: 20px;
+    }
+    .main{
+        display: block;
+        padding: 0 20px 0 20px;
+    }
+    .main .col-2{
+        display: inline;
+        width: 100%;
+    }
+    .main img{
+        width: 250px;
+    }
+    .main .order-content{
+        padding: 0 30px 0 30px;
+    }
+    .main .order-content #title{
+        padding-top: 10px;
+        font-weight: 500;
+    }
+}

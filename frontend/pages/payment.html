@@ -1,0 +1,31 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Sepete Ekle</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/addProduct.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+
+{% load crispy_forms_tags %}          
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="log-container">
+            <div class="col-md-6 offset-md-3">
+            <img src="" alt=""></div>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{form | crispy}}
+                <br>
+                <button type="submit" class="btn btn-warning">Ödemeyi Tamamla</button>
+            </form>
+            <br>
+            <div class="back-to-shop"><a href="{% url 'basket:basketItems' %}">&leftarrow;</a><span class="text-muted">Sepete Dön</span></div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
