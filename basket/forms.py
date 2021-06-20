@@ -21,7 +21,6 @@ class OrderForm(forms.Form):
     adress = forms.CharField(max_length=300, label="Adres Bilgisi")
     phone_number = forms.CharField(max_length=10, label="Telefon Numarası",help_text="10 haneli telefon numarası giriniz: (5XX)XXXXXXX")
     user_note = forms.CharField(min_length=0,max_length=200,required=False, empty_value="-", label="Kullanıcı Notu", help_text="Siparişle ilgili ek bilgi(isteğe bağlı)")
-    payment_method = forms.ChoiceField(choices=PAYMETHOD_CHOICES, label="Ödeme Yöntemi")
 
 
 STATUS_CHOICES = (
@@ -32,3 +31,16 @@ STATUS_CHOICES = (
 class AdminForm(forms.Form):
     orderId = forms.IntegerField(min_value=1)
     status = forms.ChoiceField(choices=STATUS_CHOICES, label="Durum")
+
+
+class OrderWithPaymentForm(forms.Form):
+    adress = forms.CharField(max_length=300, label="Adres Bilgisi")
+    phone_number = forms.CharField(max_length=10, label="Telefon Numarası",help_text="10 haneli telefon numarası giriniz: (5XX)XXXXXXX")
+    user_note = forms.CharField(min_length=0,max_length=200,required=False, empty_value="-", label="Kullanıcı Notu", help_text="Siparişle ilgili ek bilgi(isteğe bağlı)")
+    full_name = forms.CharField(min_length=6, max_length=50, label="Kart Üzerindeki İsim", help_text="Kart sahibinin ismi ve soyismi")
+    cardNumber = forms.CharField(min_length=16, max_length=16, label="Kart Numarası", help_text="Örnek: 1234567891234567")
+    cvv = forms.IntegerField(min_value=100, max_value=999, label="CVV", help_text="Kartınızın arka yüzündeki CVV kodunu girin.")
+    validTHRU = forms.CharField(help_text="mm/yy, olarak yazın", label="Son Kullanma Tarihi")
+
+class PayMethodForm(forms.Form):
+    payment_method = forms.ChoiceField(choices=PAYMETHOD_CHOICES, label="Ödeme Yöntemi")

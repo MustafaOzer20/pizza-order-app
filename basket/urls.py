@@ -12,5 +12,5 @@ urlpatterns = [
     path('basketItems/updatePiece/reduce/<int:id>', views.updateReducePiece, name="updateReducePiece"),
 
     #payment
-    path('payment/', views.payment, name="payment")
+    path('payment/<int:methodId>', views.payment, name="payment"),
 ]

@@ -56,7 +56,7 @@ def loginUser(request):
             user = authenticate(username = username, password=password)
             if user is None:
                 messages.info(request, "Email yada Parola Hatalı.")
-                return render(request, "login.html", context)
+                return render(request, "user_operation/normal_user/login.html", context)
             messages.success(request,"Giriş Başarılı! PizzaS'ın enfes pizza diyarlarında dolaşmaya hazır mısınız?")
             login(request, user)
             return redirect('/')

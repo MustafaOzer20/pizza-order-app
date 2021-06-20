@@ -1,6 +1,6 @@
 from sqlite3.dbapi2 import connect
 from basket.models import OrderPizza
-from basket.forms import OrderForm
+from basket.forms import OrderForm, OrderWithPaymentForm, PayMethodForm
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 import sqlite3
@@ -15,6 +15,11 @@ def basketList(request):
     """
     context = checkBasket(request)
     if context != None:
+        form = PayMethodForm(request.POST or None)
+        if form.is_valid():
+            methodId = form.cleaned_data.get("payment_method")
+            return redirect(f"/basket/payment/{methodId}")
+        context.update({"form":form})
         return render(request, "pages/basket.html", context)
     return render(request, "pages/basket.html")
 
@@ -30,7 +35,7 @@ def delete(request, id):
     return redirect("/basket/basketItems")
 
 @login_required(login_url="user:login")
-def payment(request):
+def payment(request, methodId):
     # url:/basket/payment/
     """ 
         Sepet bos ise ana sayfaya yonlendirir.
@@ -48,12 +53,16 @@ def payment(request):
     except:
         messages.info(request,"Sepetiniz Boş")
         return redirect("/")
-    form = OrderForm(request.POST or None)
+    if methodId == 3:
+        form = OrderWithPaymentForm(request.POST or None)
+    else:
+        form = OrderForm(request.POST or None)
+
     if form.is_valid():
         adress = form.cleaned_data.get("adress")
         phone_number = form.cleaned_data.get("phone_number")
         user_note = form.cleaned_data.get("user_note")
-        payment_method = form.cleaned_data.get("payment_method")
+        payment_method = methodId
         pizzasId = str(pizzasId)       
         newOrder = OrderPizza(
             basketId= basketId,userId = request.user.id,
@@ -78,6 +87,7 @@ def payment(request):
     cur.close()
     con.close()
     return render(request, "pages/payment.html", context )
+
 
 @login_required(login_url="user:login")
 def updateAddPiece(request, id):
@@ -145,6 +155,7 @@ def checkBasket(request, payment=False):
         basketItems = list(zip(pizzaItems, basketLs))
         if payment:
             return [pizzasId, basketId, size, pieces, sumPrice]
+        
         context = {
             "basketItems": basketItems,
             "itemsCount": len(basketItems),
