@@ -54,7 +54,7 @@
                             <div class="col">Büyük Boy</div>
                         {% elif item.3 == 2 %}
                             <div class="col">Orta Boy</div>
-                        {% else %}
+                        {% elif item.3 == 1 %}
                             <div class="col">Küçük Boy</div>
                         {% endif %}
                     </div>
@@ -72,10 +72,10 @@
             <span>Müşterinin Adı:</span> {{user.0}} {{user.1}} <br>
             <span>Adres:</span> {{ord.7}}<br>
             <span>Tel No:</span> {{ord.8}}<br> 
-            <span>Müşteri Notu:</span> {{ord.11}}<br> 
-            {% if ord.12 == '1' %}
+            <span>Müşteri Notu:</span> {{ord.12}}<br> 
+            {% if ord.11 == '1' %}
                 <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Nakit)<br> 
-            {% elif ord.12 == '2' %}
+            {% elif ord.11 == '2' %}
                 <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Kart)<br> 
             {% else %}
                 <span>Ödeme Yöntemi:</span> Online Ödeme<br>

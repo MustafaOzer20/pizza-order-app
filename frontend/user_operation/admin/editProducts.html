@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block baslik %}
-    <title>PizzaS | Ürünü Düzenle</title>
+    <title>PizzaS | {{title}}</title>
     <link rel="stylesheet" href="{% static 'css/page_specific/addProduct.css' %}">
 {% endblock baslik %}
     
@@ -25,7 +25,7 @@
                 <button type="submit" class="btn btn-warning">Güncelle</button>
             </form>
             <br>
-            <a href="{% url 'user:products' %}">Vazgeç</a>
+            <a href="{% url 'pizzas:products' %}">Vazgeç</a>
         </div>
     </div>
 </div>

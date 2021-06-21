@@ -4,6 +4,21 @@
 {% block baslik %}
     <title>PizzaS | Ürünler</title>
     <link rel="stylesheet" href="{% static 'css/page_specific/products.css' %}">
+    <style>
+    a.admin-btn i{
+      margin: 5px;
+    }
+    a.admin-btn{
+      border-radius: 30px;
+      padding: 20px;
+      background: orange;
+      color: #fff;
+      text-decoration: none;
+    }
+    #add{
+      margin: 30px;
+    }
+    </style>
 {% endblock baslik %}
     
 
@@ -11,7 +26,11 @@
 {% block body %}
 
 {% load static %}
+
 <div class="col-md-6 offset-md-3">
+  <div id="add" class="col-md-6 offset-md-3">
+    <a class="admin-btn" href="{% url 'pizzas:productsAdd' %}"><i class="fas fa-plus"></i> Pizza Ekle</a>
+  </div>
 <table class="">
   <thead>
     <tr>
@@ -30,8 +49,8 @@
         <td>{{title|truncatechars:10}}</td>
         <td>{{category|truncatechars:10}}</td>
         <td>{{price}} TL</td>
-        <td><a href="{% url 'user:productsEdit' id %}"><i class="fas fa-edit"></i></a></td>
-        <td><a href="{% url 'user:productsDelete' id %}"><i class="fas fa-trash"></i></a></td>
+        <td><a href="{% url 'pizzas:productsEdit' id %}"><i class="fas fa-edit"></i></a></td>
+        <td><a href="{% url 'pizzas:productsDelete' id %}"><i class="fas fa-trash"></i></a></td>
       </tr>
       {% endfor %}
     

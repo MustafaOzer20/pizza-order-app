@@ -4,12 +4,68 @@
 {% block baslik %}
     <title>PizzaS | {{title}}</title>
     <link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
+    <style>
+      ul.nav{
+        margin-top: 10px;
+        margin-left: 33px;
+        background: #fff;
+        padding: 20px;
+      }
+      ul.nav a{
+        color: orange;
+      }
+      li.nav-item a.nav-link.active{
+        background-color: orange;
+        color: #fff;
+      }
+      @media (max-width:545px){
+        ul.nav{
+        margin-left: 0;
+        padding: 15px;
+      }
+      }
+      @media (max-width:504px){
+        ul.nav{
+        font-size: 11px;
+      }
+      }
+    </style>
 {% endblock baslik %}
     
 
 
 {% block body %}
 
+<ul class="nav nav-pills nav-fill">
+  <li class="nav-item">
+    {% if title == "Cazip Pizzalar" %}
+    <a class="nav-link active" href="{% url 'pizzas:cazip' %}">Cazip Pizzalar</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'pizzas:cazip' %}">Cazip Pizzalar</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "Özel Pizzalar" %}
+    <a class="nav-link active" href="{% url 'pizzas:special' %}">Özel Pizzalar</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'pizzas:special' %}">Özel Pizzalar</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "Bol Malzemeli Pizzalar" %}
+    <a class="nav-link active" href="{% url 'pizzas:bolmalzemeli' %}">Bol Malzemeli Pizzalar</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'pizzas:bolmalzemeli' %}">Bol Malzemeli Pizzalar</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "Gurme Pizzalar" %}
+    <a class="nav-link active" href="{% url 'pizzas:gurme' %}">Gurme Pizzalar</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'pizzas:gurme' %}">Gurme Pizzalar</a>
+    {% endif %}
+  </li>
+</ul>
     <div class="pizza-list">
     <div class="grid-container">
     {% for id, name, contents, price, imageUrl, category in pizzas %}
@@ -20,7 +76,7 @@
             <h2>{{name}}</h2>
             <span class="contents">{{contents}}</span>
             <span class="price">{{price}} TL</span>
-            <a href="{% url 'pizzas:basket' id %}">Sipariş Ver</a>
+            <a href="{% url 'basket:addToBasketPizza' id %}">Sipariş Ver</a>
           </div>
         </div>
         </div>

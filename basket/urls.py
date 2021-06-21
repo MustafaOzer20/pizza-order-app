@@ -11,6 +11,11 @@ urlpatterns = [
     path('basketItems/updatePiece/add/<int:id>', views.updateAddPiece, name="updateAddPiece"),
     path('basketItems/updatePiece/reduce/<int:id>', views.updateReducePiece, name="updateReducePiece"),
 
+    #addBasket
+    path('addtobasket/pizza/<int:id>', views.addToBasketPizza, name="addToBasketPizza"),
+    path('addtobasket/campaign/<int:id>', views.addToBasketCampaign, name="addToBasketCampaign"),
+    path('addtobasket/extras/<int:id>', views.addToBasketExtras, name="addToBasketExtras"),
+
     #payment
     path('payment/<int:methodId>', views.payment, name="payment"),
 ]

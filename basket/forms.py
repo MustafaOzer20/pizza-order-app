@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.forms import Form
 
 SIZE_CHOICES = (
     ("1", "Küçük Boy"),
@@ -10,6 +11,9 @@ SIZE_CHOICES = (
 class BasketForm(forms.Form):
     piece = forms.IntegerField(min_value=1, max_value=10, label="Adet")
     size = forms.ChoiceField(choices=SIZE_CHOICES, label="Boy", help_text="Küçük Boy -15TL ----- Orta Boy -10TL")
+
+class CampaignBasketForm(forms.Form):
+    piece = forms.IntegerField(min_value=1, max_value=10, label="Adet")
 
 
 PAYMETHOD_CHOICES = (

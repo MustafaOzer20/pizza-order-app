@@ -22,5 +22,7 @@ urlpatterns = [
     path('', views.index, name="home"),
     path('pizzas/', include(('pizzas.urls',"pizzas"),namespace="pizzas")),
     path('user/', include(('user.urls',"user"), namespace="user") ),
-    path('basket/', include(('basket.urls',"basket"), namespace="basket"))
+    path('basket/', include(('basket.urls',"basket"), namespace="basket")),
+    path('campaign/', include(('campaign.urls', 'campaign'),namespace="campaign")),
+    path('extras/', include(('extras.urls', 'extras'),namespace="extras")),
 ]

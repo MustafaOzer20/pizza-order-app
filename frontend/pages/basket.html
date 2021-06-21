@@ -27,24 +27,49 @@
                 </div>
             </div>
             {% for pizza,feature in basketItems %}
-                <div class="row border-top border-bottom">
+                {% if feature.5 == 1 %}
+                    <div class="row border-top border-bottom">
                     <div class="row main align-items-center">
                         <div class="col-2"><img class="img-fluid" src="{{pizza.4}}"></div>
                         <div class="col">
                             <div id="pizzas-text" class="row">{{pizza.1}}</div>
                             <div id="pizzas-text" class="row text-muted">{{pizza.2}}</div>
                         </div>
-                        {% if feature.3 == '3' %}
+                        {% if feature.4 == '3' %}
                             <div id="pizzas-text" class="col">Büyük Boy</div>
-                        {% elif feature.3 == '2' %}
+                        {% elif feature.4 == '2' %}
                             <div id="pizzas-text" class="col">Orta Boy</div>
                         {% else %}
                             <div id="pizzas-text" class="col">Küçük Boy</div>
                         {% endif %}
-                        <div id="pizzas-text" class="col"><a class="text-muted" href="{% url 'basket:updateReducePiece' feature.0 %}">-</a> {{feature.2}} <a class="text-muted" href="{% url 'basket:updateAddPiece' feature.0 %}">+</a></div>
+                        <div id="pizzas-text" class="col"><a class="text-muted" href="{% url 'basket:updateReducePiece' feature.0 %}">-</a> {{feature.3}} <a class="text-muted" href="{% url 'basket:updateAddPiece' feature.0 %}">+</a></div>
                         <div id="pizzas-text" class="col">{{pizza.3}} TL<a href="{% url 'basket:removeItem' feature.0 %}" class="close">&#10005;</a></div>
                     </div>
                 </div> <hr>
+                {% elif feature.5 == 2 %}
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" src="{{pizza.1}}"></div>
+                        <div class="col">
+                            <div id="pizzas-text" class="row">{{pizza.2}}</div>
+                        </div>
+                        <div id="pizzas-text" class="col"><a class="text-muted" href="{% url 'basket:updateReducePiece' feature.0 %}">-</a> {{feature.3}} <a class="text-muted" href="{% url 'basket:updateAddPiece' feature.0 %}">+</a></div>
+                        <div id="pizzas-text" class="col">{{pizza.3}} TL<a href="{% url 'basket:removeItem' feature.0 %}" class="close">&#10005;</a></div>
+                    </div>
+                </div> <hr>
+                {% else %}
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" src="{{pizza.1}}"></div>
+                        <div class="col">
+                            <div id="pizzas-text" class="row">{{pizza.2}}</div>
+                        </div>
+                        <div id="pizzas-text" class="col"><a class="text-muted" href="{% url 'basket:updateReducePiece' feature.0 %}">-</a> {{feature.3}} <a class="text-muted" href="{% url 'basket:updateAddPiece' feature.0 %}">+</a></div>
+                        <div id="pizzas-text" class="col">{{pizza.4}} TL<a href="{% url 'basket:removeItem' feature.0 %}" class="close">&#10005;</a></div>
+                    </div>
+                </div> <hr>
+                {% endif %}
+                
             {% endfor %}
             <div class="back-to-shop"><a href="{% url 'pizzas:pizzas' %}">&leftarrow;</a><span class="text-muted">Alışverişe Devam Et</span></div>
         </div>

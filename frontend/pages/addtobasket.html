@@ -11,12 +11,12 @@
 {% block body %}
 {% load crispy_forms_tags %} 
 <div class="col-md-6 offset-md-3">
-<h2 class="title">{{pizza.1}}</h2>
+<h2 class="title">{{product.title}}</h2>
 
 <div class="single-card">
-    <img src="{{pizza.4}}" alt="">
-    <p>{{pizza.2}}</p>
-    <span>{{pizza.3}} TL</span>
+    <img src="{{product.imageUrl}}" alt="">
+    <p>{{product.contents}}</p>
+    <span>{{product.price}} TL</span>
 </div></div>
 <div class="col-md-6 offset-md-3">
 <form method="post">

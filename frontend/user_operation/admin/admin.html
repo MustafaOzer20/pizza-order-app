@@ -5,6 +5,33 @@
 {% block baslik %}
     <title>PizzaS | Kontrol Paneli</title>
     <link rel="stylesheet" href="{% static 'css/page_specific/admin.css' %}">
+    <style>
+        ul.nav{
+        margin-top: 10px;
+        margin-left: 33px;
+        margin-bottom: 20px;
+        background: #fff;
+        padding: 20px;
+      }
+      ul.nav a{
+        color: orange;
+      }
+      li.nav-item a.nav-link.active{
+        background-color: orange;
+        color: #fff;
+      }
+      @media (max-width:545px){
+        ul.nav{
+        margin-left: 0;
+        padding: 15px;
+      }
+      }
+      @media (max-width:504px){
+        ul.nav{
+        font-size: 11px;
+      }
+      }
+    </style>
 {% endblock baslik %}
     
 
@@ -13,7 +40,20 @@
 {% load static %}
 
 {% load crispy_forms_tags %}
-
+<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'user:orders' %}">Gelen Siparişler</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'pizzas:products' %}">Pizzaları Düzenle</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'campaign:campaign' %}">Kampanyaları Düzenle</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'extras:extras' %}">Ekstraları Düzenle</a>
+    </li>
+  </ul>
 <div id="adminDashboard" class="row">
     <div class="col-md-6 offset-md-3">
         <div class="log-container">
@@ -23,15 +63,7 @@
                 <span style="font-size:13px;">Yıllık Kazanç : {{yearly}} TL</span> <br>
                <span style="font-size:13px;">Aylık Kazanç : {{monthly}} TL</span> <br>
                <span style="font-size:13px;">Günlük Kazanç : {{daily}} TL</span> <br>
-            </div>
-            <div class="col-md-6 offset-md-3">
-            <a class="admin-btn" href="{% url 'user:orders' %}">Gelen Siparişler</a></div>
-            <div class="col-md-6 offset-md-3">
-                <a class="admin-btn" href="{% url 'user:products' %}">Ürünleri Düzenle</a>
-            </div>
-            <div class="col-md-6 offset-md-3">
-                <a class="admin-btn" href="{% url 'user:productsAdd' %}">Ürün Ekle</a>
-            </div>
+            </div>           
         </div>
     </div>
 </div>

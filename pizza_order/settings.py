@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'pizzas.apps.PizzasConfig',
     'user.apps.UserConfig',
     'basket.apps.BasketConfig',
+    'campaign.apps.CampaignConfig',
+    'extras.apps.ExtrasConfig',
     'crispy_forms', # kütüphanelerin formlara dahil edilmesi için gereklidir
 ]
 

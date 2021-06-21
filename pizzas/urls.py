@@ -1,5 +1,3 @@
-from os import name
-from django.contrib import admin
 from django.urls import path
 from pizzas import views
 
@@ -11,6 +9,9 @@ urlpatterns = [
     path('bolmalzemeli/', views.bolmalzeme, name="bolmalzemeli"),
     path('gurme/', views.gurme, name="gurme"),
 
-    #basket
-    path('addtobasket/<int:id>', views.basket, name="basket")
+    #admin
+    path('admin/products/', views.products, name="products"),
+    path('admin/products/edit/<int:id>', views.productsEdit, name="productsEdit"),
+    path('admin/products/add/', views.productsAdd, name="productsAdd"),
+    path('admin/products/delete/<int:id>', views.productsDelete, name="productsDelete"),
 ]

@@ -5,6 +5,7 @@
       margin-right: 20px;
     }
   nav {
+      margin-bottom:25px;
     z-index: 9999999999999;
     border-bottom: 1px solid #ccc;
     position: fixed;
@@ -176,10 +177,8 @@
   </div>
   <ul class="nav-links">
       <li><a href="{% url 'pizzas:pizzas' %}">Tüm Pizzalar</a></li>
-      <li><a href="{% url 'pizzas:cazip' %}">Cazip Pizzalar</a></li>
-      <li><a href="{% url 'pizzas:special' %}">Özel Pizzalar</a></li>
-      <li><a href="{% url 'pizzas:bolmalzemeli' %}">Bol Malzemeli Pizzalar</a></li>
-      <li><a href="{% url 'pizzas:gurme' %}">Gurme Pizzalar</a></li>
+      <li><a href="{% url 'campaign:index' %}">Tüm Kampanyalar</a></li>
+      <li><a href="{% url 'extras:index' %}">Ekstralar&İçecekler</a></li>
   </ul>
   <div class="burger">
       <div class="line1"></div>

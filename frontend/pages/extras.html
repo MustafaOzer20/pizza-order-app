@@ -1,0 +1,94 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | {{title}}</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
+    <style>
+      ul.nav{
+        margin-top: 10px;
+        margin-left: 33px;
+        background: #fff;
+        padding: 20px;
+      }
+      ul.nav a{
+        color: orange;
+      }
+      li.nav-item a.nav-link.active{
+        background-color: orange;
+        color: #fff;
+      }
+      @media (max-width:545px){
+        ul.nav{
+        margin-left: 0;
+        padding: 15px;
+      }
+      }
+      @media (max-width:504px){
+        ul.nav{
+        font-size: 11px;
+      }
+      }
+    </style>
+{% endblock baslik %}
+    
+
+
+{% block body %}
+
+<ul class="nav nav-pills nav-fill">
+  <li class="nav-item">
+    {% if title == "Dürümler" %}
+    <a class="nav-link active" href="{% url 'extras:wraps' %}">Dürümler</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'extras:wraps' %}">Dürümler</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "Atıştırmalık & Sos" %}
+    <a class="nav-link active" href="{% url 'extras:snacks' %}">Atıştırmalık & Sos</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'extras:snacks' %}">Atıştırmalık & Sos</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "Makarnalar" %}
+    <a class="nav-link active" href="{% url 'extras:macaroni' %}">Makarnalar</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'extras:macaroni' %}">Makarnalar</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "İçecekler" %}
+    <a class="nav-link active" href="{% url 'extras:drinks' %}">İçecekler</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'extras:drinks' %}">İçecekler</a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+    {% if title == "Tatlılar" %}
+    <a class="nav-link active" href="{% url 'extras:desserts' %}">Tatlılar</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'extras:desserts' %}">Tatlılar</a>
+    {% endif %}
+  </li>
+</ul>
+    <div class="pizza-list">
+    <div class="grid-container">
+    
+    {% for id, imageUrl,title,contents,price,category in products %}
+    <div class="grid-item">
+        <div class="pizza-card">
+          <img src={{imageUrl}}></img>
+          <div class="pizza"> 
+            <h2>{{title}}</h2>
+            <span class="contents">{{contents}}</span>
+            <span class="price">{{price}} TL</span>
+            <a href="{% url 'basket:addToBasketExtras' id %}">Sipariş Ver</a>
+          </div>
+        </div>
+        </div>
+    {% endfor %}
+    </div></div>
+
+{% endblock body %}

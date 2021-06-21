@@ -96,26 +96,33 @@ def myOrders(request):
     con = sqlite3.connect("db.sqlite3")
     cur = con.cursor()
     qy =cur.execute("SELECT * FROM basket_orderpizza where userId = ?",(request.user.id,))
-    pizzasIds = []
+    productsIds = []
     orders = []
+    categoryIds = []
     j = 0
     for i in qy: 
-        # i = (id,basketId,userId,pizzasIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method)
-        pizzasIds.append(list(eval(i[3])))
+        # i = (id,basketId,userId,productsIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method,categoryIds)
+        productsIds.append(list(eval(i[3])))
         orders.append(i)
+        categoryIds.append(list(eval(i[-1])))
         j+=1
         if j>10:
             break
     ordersList = []
     x = 0
-    for i in pizzasIds:
-        # orders[x] = (id,basketId,userId,pizzasIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method)
+    for i in range(len(productsIds)):
+        # orders[x] = (id,basketId,userId,productsIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method,categoryIds)
         orders[x] = list(orders[x])
         orders[x][3] = []
         l = 0
-        for j in i:     
-            pizza = cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(j,))
-            for k in pizza: # k = (title,price,imageUrl)
+        for j in range(len(productsIds[i])):  
+            if categoryIds[i][j] == 1:  
+                product = cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(productsIds[i][j],))
+            elif categoryIds[i][j] == 2: 
+                product = cur.execute("SELECT title,price,imageUrl FROM campaign_campaign where id=?",(productsIds[i][j],))
+            elif categoryIds[i][j] == 3: 
+                product = cur.execute("SELECT title,price,imageUrl FROM extras_extra where id=?",(productsIds[i][j],))
+            for k in product: # k = (title,price,imageUrl)
                 temp = list(k)
                 temp.append(list(eval(orders[x][4]))[l])
                 temp.append(list(eval(orders[x][5]))[l])
@@ -126,8 +133,10 @@ def myOrders(request):
                 temp[1] = round(temp[1], 2)
                 orders[x][3].append(temp)
             l+=1
-        orders[x][9] = orders[x][9][:16]
-        ordersList.append(orders[x])
+            orders[x][9] = orders[x][9][:16]
+            temp = list(orders[x])
+            temp.append(categoryIds[i][j])
+        ordersList.append(temp)
         x += 1
     user = cur.execute("SELECT first_name,last_name FROM auth_user where id = ?", (request.user.id,))
     ordersList.reverse()
@@ -192,24 +201,31 @@ def orders(request):
         con.commit()
         return redirect("/user/admin/orders")
     qy = cur.execute("SELECT * FROM basket_orderpizza")
-    pizzasIds = []
+    productsIds = []
+    categoryIds = []
     orders = []
     j = 0
     for i in qy:
-        pizzasIds.append(list(eval(i[3])))
+        productsIds.append(list(eval(i[3])))
         orders.append(i)
+        categoryIds.append(list(eval(i[-1])))
         j+=1
         if j>500:
             break
     ordersList = []
     x = 0
-    for i in pizzasIds:
+    for i in range(len(productsIds)):
         orders[x] = list(orders[x])
         orders[x][3] = []
         l = 0
-        for j in i:     
-            pizza = cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(j,))
-            for k in pizza:
+        for j in range(len(productsIds[i])):     
+            if categoryIds[i][j] == 1:
+                product = cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(productsIds[i][j],))
+            elif categoryIds[i][j] == 2:
+                product = cur.execute("SELECT title,price,imageUrl FROM campaign_campaign where id=?",(productsIds[i][j],))
+            else:
+                product = cur.execute("SELECT title,price,imageUrl FROM extras_extra where id=?",(productsIds[i][j],))
+            for k in product:
                 temp = list(k)
                 temp.append(list(eval(orders[x][4]))[l])
                 temp.append(list(eval(orders[x][5]))[l])
@@ -235,76 +251,6 @@ def orders(request):
     cur.close()
     con.close()
     return render(request, "user_operation/admin/orders.html",context)
-
-@login_required(login_url="user:login")
-def products(request):
-    # url:/user/admin/products/
-    if not request.user.is_superuser:
-        messages.info(request,"İzinsiz Giriş!")
-        return redirect("/")
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    qy = cur.execute("SELECT * FROM pizzas_pizza")
-    pizzas = []
-    for i in qy:
-        pizzas.append(i)
-
-    context = {
-        "pizzas":pizzas
-    } 
-    cur.close()
-    con.close()
-    return render(request, "user_operation/admin/products.html", context)
-
-@login_required(login_url="user:login")
-def productsEdit(request, id):
-    # url:/user/admin/products/edit/<int:id>
-    if not request.user.is_superuser:
-        messages.info(request,"İzinsiz Giriş!")
-        return redirect("/")
-    pizza = get_object_or_404(Pizza,id = id)
-    form = PizzaForm(request.POST or None, instance=pizza)
-    if form.is_valid():
-        pizza = form.save(commit=False)
-        pizza.save()
-        messages.success(request, "Ürün Başarıyla Güncellendi!")
-        return redirect("/user/admin/products/")
-    context = {
-        "form":form
-    }
-    return render(request, "user_operation/admin/editProducts.html", context)
-
-@login_required(login_url="user:login")
-def productsAdd(request):
-    # url:/user/admin/products/add/
-    if not request.user.is_superuser:
-        messages.info(request,"İzinsiz Giriş!")
-        return redirect("/")
-    form = PizzaForm(request.POST or None)
-    context = {
-        "form":form
-    }
-    if form.is_valid():
-        pizza = form.save(commit=False)
-        pizza.save()
-        messages.success(request,"Ürün Eklendi")
-        return redirect("/user/admin/products/")
-    return render(request, "user_operation/admin/addProduct.html", context)
-
-@login_required(login_url="user:login")
-def productsDelete(request, id):
-    # url:/user/admin/products/delete/<int:id>
-    if not request.user.is_superuser:
-        messages.info(request,"İzinsiz Giriş!")
-        return redirect("/")
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    cur.execute("DELETE FROM pizzas_pizza where id=?", (id,))
-    con.commit()
-    cur.close()
-    con.close()
-    messages.success(request,"Ürün Silindi!.")
-    return redirect("/user/admin/products/")
 
 @login_required(login_url="user:login")
 def usernameChange(request):
@@ -375,4 +321,5 @@ def passwdChange(request):
         return redirect("/user/myaccount/")
         
     return render(request, "user_operation/normal_user/changePasswd.html", context)
+
 

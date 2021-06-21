@@ -1,0 +1,58 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Ürünler</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/products.css' %}">
+    <style>
+    a.admin-btn i{
+      margin: 5px;
+    }
+    a.admin-btn{
+      border-radius: 30px;
+      padding: 20px;
+      background: orange;
+      color: #fff;
+      text-decoration: none;
+    }
+    #add{
+      margin: 30px;
+    }
+    </style>
+{% endblock baslik %}
+    
+
+
+{% block body %}
+{% load static %}
+
+<div class="col-md-6 offset-md-3">
+  <div id="add" class="col-md-6 offset-md-3">
+    <a class="admin-btn" href="{% url 'campaign:campaignAdd' %}"><i class="fas fa-plus"></i> Kampanya Ekle</a>
+  </div>
+<table class="">
+  <thead>
+    <tr>
+      <th scope="col">Pizza</th>
+      <th scope="col">İsim</th>
+      <th scope="col">Kategori</th>
+      <th scope="col">Fiyat</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for id,imageUrl,title,price,category in campaigns %}
+      <tr>
+        <th scope="row"><img src="{{imageUrl}}" alt=""></th>
+        <td>{{title|truncatechars:10}}</td>
+        <td>{{category|truncatechars:10}}</td>
+        <td>{{price}} TL</td>
+        <td><a href="{% url 'campaign:campaignEdit' id %}"><i class="fas fa-edit"></i></a></td>
+        <td><a href="{% url 'campaign:campaignDelete' id %}"><i class="fas fa-trash"></i></a></td>
+      </tr>
+      {% endfor %}
+    
+  </tbody>
+</table></div>
+{% endblock body %}
