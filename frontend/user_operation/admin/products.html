@@ -43,14 +43,14 @@
     </tr>
   </thead>
   <tbody>
-      {% for id,title,contents,price,imageUrl,category in pizzas %}
+      {% for pizza in pizzas %}
       <tr>
-        <th scope="row"><img src="{{imageUrl}}" alt=""></th>
-        <td>{{title|truncatechars:10}}</td>
-        <td>{{category|truncatechars:10}}</td>
-        <td>{{price}} TL</td>
-        <td><a href="{% url 'pizzas:productsEdit' id %}"><i class="fas fa-edit"></i></a></td>
-        <td><a href="{% url 'pizzas:productsDelete' id %}"><i class="fas fa-trash"></i></a></td>
+        <th scope="row"><img src="{{pizza.imageUrl}}" alt=""></th>
+        <td>{{pizza.title|truncatechars:10}}</td>
+        <td>{{pizza.category|truncatechars:10}}</td>
+        <td>{{pizza.price}} TL</td>
+        <td><a href="{% url 'pizzas:productsEdit' pizza.id %}"><i class="fas fa-edit"></i></a></td>
+        <td><a href="{% url 'pizzas:productsDelete' pizza.id %}"><i class="fas fa-trash"></i></a></td>
       </tr>
       {% endfor %}
     

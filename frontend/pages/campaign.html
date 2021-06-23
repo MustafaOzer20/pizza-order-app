@@ -68,15 +68,15 @@
 </ul>
     <div class="pizza-list">
     <div class="grid-container">
-    {% for id, imageUrl,title, price,category in pizzas %}
+    {% for campaign in campaigns %}
     <div class="grid-item">
         <div class="pizza-card">
-          <img src={{imageUrl}}></img>
+          <img src={{campaign.imageUrl}}></img>
           <div class="pizza"> 
-            <h2>{{title}}</h2>
-            <span class="contents">{{contents}}</span>
-            <span class="price">{{price}} TL</span>
-            <a href="{% url 'basket:addToBasketCampaign' id %}">Sipariş Ver</a>
+            <h2>{{campaign.title}}</h2>
+            <span class="contents">{{campaign.contents}}</span>
+            <span class="price">{{campaign.price}} TL</span>
+            <a href="{% url 'basket:addToBasketCampaign' campaign.id %}">Sipariş Ver</a>
           </div>
         </div>
         </div>

@@ -1,8 +1,9 @@
+from basket.models import OrderPizza
+from extras.models import Extra
+from campaign.models import Campaign
 from pizzas.models import Pizza
-from pizzas.forms import PizzaForm
 from basket.forms import AdminForm
-import sqlite3
-from django.shortcuts import get_object_or_404, render,redirect
+from django.shortcuts import render,redirect
 from .forms import LoginForm, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -93,18 +94,16 @@ def myOrders(request):
         sozluk yapisi ile arayuze gonderilir.
 
     """
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    qy =cur.execute("SELECT * FROM basket_orderpizza where userId = ?",(request.user.id,))
+    qy = OrderPizza.objects.filter(userId=request.user.id) #cur.execute("SELECT * FROM basket_orderpizza where userId = ?",(request.user.id,))
     productsIds = []
     orders = []
     categoryIds = []
     j = 0
     for i in qy: 
         # i = (id,basketId,userId,productsIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method,categoryIds)
-        productsIds.append(list(eval(i[3])))
+        productsIds.append(list(eval(i.productIds)))
         orders.append(i)
-        categoryIds.append(list(eval(i[-1])))
+        categoryIds.append(list(eval(i.categoryIds)))
         j+=1
         if j>10:
             break
@@ -112,73 +111,65 @@ def myOrders(request):
     x = 0
     for i in range(len(productsIds)):
         # orders[x] = (id,basketId,userId,productsIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method,categoryIds)
-        orders[x] = list(orders[x])
-        orders[x][3] = []
-        l = 0
+        orders[x].productIds = []
+
         for j in range(len(productsIds[i])):  
             if categoryIds[i][j] == 1:  
-                product = cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(productsIds[i][j],))
+                product = Pizza.objects.get(id=productsIds[i][j]) #cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(productsIds[i][j],))
             elif categoryIds[i][j] == 2: 
-                product = cur.execute("SELECT title,price,imageUrl FROM campaign_campaign where id=?",(productsIds[i][j],))
+                product = Campaign.objects.get(id=productsIds[i][j])#cur.execute("SELECT title,price,imageUrl FROM campaign_campaign where id=?",(productsIds[i][j],))
             elif categoryIds[i][j] == 3: 
-                product = cur.execute("SELECT title,price,imageUrl FROM extras_extra where id=?",(productsIds[i][j],))
-            for k in product: # k = (title,price,imageUrl)
-                temp = list(k)
-                temp.append(list(eval(orders[x][4]))[l])
-                temp.append(list(eval(orders[x][5]))[l])
-                if list(eval(orders[x][4]))[l] == 2:
-                    temp[1] -= 10
-                elif list(eval(orders[x][4]))[l] == 1:
-                    temp[1] -= 15
-                temp[1] = round(temp[1], 2)
-                orders[x][3].append(temp)
-            l+=1
-            orders[x][9] = orders[x][9][:16]
-            temp = list(orders[x])
-            temp.append(categoryIds[i][j])
-        ordersList.append(temp)
+                product = Extra.objects.get(id=productsIds[i][j])#cur.execute("SELECT title,price,imageUrl FROM extras_extra where id=?",(productsIds[i][j],))
+            
+            size = list(eval(orders[x].size))
+            piece = list(eval(orders[x].piece))
+
+            if size[j] == 2:
+                product.price -= 10
+            elif size[j] == 1:
+                product.price -= 15
+            product.price = round(product.price,2)
+            item = [product,size[j], piece[j], categoryIds[i][j]]
+            orders[x].productIds.append(item)
+        orders[x].created_date = str(orders[x].created_date)[:16]
+        ordersList.append(orders[x])
         x += 1
-    user = cur.execute("SELECT first_name,last_name FROM auth_user where id = ?", (request.user.id,))
-    ordersList.reverse()
+    user = User.objects.get(id=request.user.id)#cur.execute("SELECT first_name,last_name FROM auth_user where id = ?", (request.user.id,))
     context = {
         "orders": ordersList,
         "user": user
     }
-    cur.close()
-    con.close()
     return render(request, "user_operation/normal_user/myorders.html", context)
 
 @login_required(login_url="user:login")
 def adminDashboard(request):
     # url:/user/admin/dashboard/
     if request.user.is_superuser:
-        con = sqlite3.connect("db.sqlite3")
-        cur = con.cursor()
-        qy = cur.execute("SELECT sum_price, created_date FROM basket_orderpizza")
+        qy = OrderPizza.objects.all()#cur.execute("SELECT sum_price, created_date FROM basket_orderpizza")
         daily_earnings = 0
         monthly_income = 0
         annual_earnings = 0
         for i in qy: # i = (sum_price,created_date) type:tuple
             format = "%Y-%m-%d %H:%M:%S"
-            dt_object = datetime.datetime.strptime(i[1][:18], format)
+            dt_object = datetime.datetime.strptime(str(i.created_date)[:18], format)
             elapsed_time = datetime.datetime.now() - dt_object
             try:
-                if int(str(elapsed_time).split()[0])<30:
-                    monthly_income += i[0]
-                if int(str(elapsed_time).split()[0]) < 365:
-                    annual_earnings += i[0] 
+                sure = int(str(elapsed_time).split()[0])
+                if sure<30:
+                    monthly_income += i.sum_price
+                    annual_earnings += i.sum_price
+                elif 30 < sure < 365:
+                    annual_earnings += i.sum_price
             except:
-                monthly_income += i[0]
-                annual_earnings += i[0] 
+                monthly_income += i.sum_price
+                annual_earnings += i.sum_price
             if str(dt_object)[8:10] == str(datetime.datetime.now().date())[-2:] and str(dt_object)[:4] == str(datetime.datetime.now().date())[:4]:
-                daily_earnings += i[0]
+                daily_earnings += i.sum_price
         context = {
             "yearly": annual_earnings,
             "monthly": monthly_income,
             "daily": daily_earnings
         }
-        cur.close()
-        con.close()
         return render(request, "user_operation/admin/admin.html", context)
     else:
         messages.info("İzinsiz Giriş!")
@@ -191,65 +182,58 @@ def orders(request):
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
-
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
     if form.is_valid():
         orderId = form.cleaned_data.get("orderId")
         status = form.cleaned_data.get("status")
-        cur.execute("UPDATE basket_orderpizza SET status=? where id=?",(status,orderId))
-        con.commit()
+        order = OrderPizza.objects.get(id=orderId)
+        order.status = status
+        order.save()
         return redirect("/user/admin/orders")
-    qy = cur.execute("SELECT * FROM basket_orderpizza")
+    qy = OrderPizza.objects.all() #cur.execute("SELECT * FROM basket_orderpizza")
     productsIds = []
     categoryIds = []
     orders = []
     j = 0
     for i in qy:
-        productsIds.append(list(eval(i[3])))
+        productsIds.append(list(eval(i.productIds)))
         orders.append(i)
-        categoryIds.append(list(eval(i[-1])))
+        categoryIds.append(list(eval(i.categoryIds)))
         j+=1
         if j>500:
             break
     ordersList = []
     x = 0
     for i in range(len(productsIds)):
-        orders[x] = list(orders[x])
-        orders[x][3] = []
-        l = 0
+        orders[x].productIds = []
         for j in range(len(productsIds[i])):     
             if categoryIds[i][j] == 1:
-                product = cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(productsIds[i][j],))
+                product = Pizza.objects.get(id=productsIds[i][j])
             elif categoryIds[i][j] == 2:
-                product = cur.execute("SELECT title,price,imageUrl FROM campaign_campaign where id=?",(productsIds[i][j],))
+                product = Campaign.objects.get(id=productsIds[i][j])
             else:
-                product = cur.execute("SELECT title,price,imageUrl FROM extras_extra where id=?",(productsIds[i][j],))
-            for k in product:
-                temp = list(k)
-                temp.append(list(eval(orders[x][4]))[l])
-                temp.append(list(eval(orders[x][5]))[l])
-                if list(eval(orders[x][4]))[l] == 2:
-                    temp[1] -= 10
-                elif list(eval(orders[x][4]))[l] == 1:
-                    temp[1] -= 15
-                temp[1] = round(temp[1], 2)
-                orders[x][3].append(temp)
-            l+=1
-        orders[x][9] = orders[x][9][:16]
+                product = Extra.objects.get(id=productsIds[i][j])
+            
+            size = list(eval(orders[x].size))
+            piece = list(eval(orders[x].piece))
+
+            if size[j] == 2:
+                product.price -= 10
+            elif size[j] == 1:
+                product.price -= 15
+            product.price = round(product.price,2)
+            item = [product,size[j], piece[j]]
+            orders[x].productIds.append(item)
+
+        orders[x].created_date = str(orders[x].created_date)[:16]
         ordersList.append(orders[x])
         x += 1
-    user = cur.execute("SELECT first_name,last_name FROM auth_user where id = ?", (request.user.id,))
-    for i in user:
-        full_name = i
-    ordersList.reverse()
+    user = User.objects.get(id=request.user.id)
+    full_name = user.first_name + " " + user.last_name
     context = {
         "orders": ordersList,
         "user": full_name,
         "form": form
     }
-    cur.close()
-    con.close()
     return render(request, "user_operation/admin/orders.html",context)
 
 @login_required(login_url="user:login")

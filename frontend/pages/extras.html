@@ -76,15 +76,15 @@
     <div class="pizza-list">
     <div class="grid-container">
     
-    {% for id, imageUrl,title,contents,price,category in products %}
+    {% for pizza in products %}
     <div class="grid-item">
         <div class="pizza-card">
-          <img src={{imageUrl}}></img>
+          <img src={{pizza.imageUrl}}></img>
           <div class="pizza"> 
-            <h2>{{title}}</h2>
-            <span class="contents">{{contents}}</span>
-            <span class="price">{{price}} TL</span>
-            <a href="{% url 'basket:addToBasketExtras' id %}">Sipariş Ver</a>
+            <h2>{{pizza.title}}</h2>
+            <span class="contents">{{pizza.contents}}</span>
+            <span class="price">{{pizza.price}} TL</span>
+            <a href="{% url 'basket:addToBasketExtras' pizza.id %}">Sipariş Ver</a>
           </div>
         </div>
         </div>

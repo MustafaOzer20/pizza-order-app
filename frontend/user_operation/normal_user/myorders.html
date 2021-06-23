@@ -15,43 +15,43 @@
         <div class="col-md-6 offset-md-3">
             <div class="order-card">
                 <div id="result">
-                    <div class="col"><div class="text-muted">{{ord.9}}</div></div>
-                    <div class="col"><div class="result">Toplam {{ord.6}} TL</div></div>
+                    <div class="col"><div class="text-muted">{{ord.created_date}}</div></div>
+                    <div class="col"><div class="result">Toplam {{ord.sum_price}} TL</div></div>
                 </div>
                 <div class="col-md-6 offset-md-3">
                     <div class="order-status">
-                    {% if ord.10 == 3 %}
+                    {% if ord.status == 3 %}
                         <div class="col" id="status-completed"><i class="fas fa-check"></i><span>Teslim Edildi</span></div>
-                    {% elif ord.10 == 2 %}
+                    {% elif ord.status == 2 %}
                         <div class="col" id="status-ready"><i class="fas fa-biking"></i><span>Siparişiniz Yolda</span></div>
                     {% else %}
                         <div class="col" id="status-not"><i class="fas fa-stopwatch"></i><span>Hazırlanıyor</span></div>
                     {% endif %}</div>
                 </div>
-        {% for item in ord.3 %}
+        {% for item,size,piece,categoryId in ord.productIds %}
         <div id="pizza-item" class="row border-top border-bottom">
             <div class="row main align-items-center">
-                <div class="col-2"><img class="img-fluid" src="{{item.2}}"></div>
+                <div class="col-2"><img class="img-fluid" src="{{item.imageUrl}}"></div>
                     <div class="order-content">
                         <div id="title" class="col">
-                            <div class="row"><h5>{{item.0|truncatechars:10}}</h5></div>
+                            <div class="row"><h6>{{item.title|truncatechars:15}}</h6></div>
                         </div>
                     </div>
                     <div class="order-content">
-                        {% if item.3 == 3 %}
+                        {% if size == 3 %}
                             <div class="col">Büyük Boy</div>
-                        {% elif item.3 == 2 %}
+                        {% elif size == 2 %}
                             <div class="col">Orta Boy</div>
-                        {% elif item.3 == 1 %}
+                        {% elif size == 1 %}
                             <div class="col">Küçük Boy</div>
                         {% else %}
                         {% endif %}
                     </div>
                     <div class="order-content">
-                        <div class="col">{{item.4}} adet</div>
+                        <div class="col">{{piece}} adet</div>
                     </div>
                     <div class="order-content">
-                        <div class="col">{{item.1}} TL </div>
+                        <div class="col">{{item.price}} TL </div>
                     </div>
                     </div>
                 </div>

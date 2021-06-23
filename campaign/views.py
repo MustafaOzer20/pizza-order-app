@@ -1,5 +1,4 @@
 from django.shortcuts import render,redirect,get_object_or_404
-import sqlite3
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from campaign.forms import CampaignForm, Campaign
@@ -9,32 +8,32 @@ from campaign.forms import CampaignForm, Campaign
 def index(request):
     # url:/campaign/
     title = "Kampanyalar"
-    qy = query()
-    return render(request, 'pages/campaign.html', {"pizzas" : qy, "title": title})
+    qy = Campaign.objects.all()
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignWrap(request):
     # url:/campaign/wrap
     title = "Dürümler"
-    qy = query(category="Dürümler")
-    return render(request, 'pages/campaign.html', {"pizzas" : qy, "title": title})
+    qy = Campaign.objects.filter(category=title)
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignPizzas(request):
     # url:/campaign/pizzas
     title = "Pizzalar"
-    qy = query(category="Pizzalar")
-    return render(request, 'pages/campaign.html', {"pizzas" : qy, "title": title})
+    qy = Campaign.objects.filter(category=title)
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignMacaroni(request):
     # url:/campaign/pizzas
     title = "Makarnalar"
-    qy = query(category="Makarnalar")
-    return render(request, 'pages/campaign.html', {"pizzas" : qy, "title": title})
+    qy = Campaign.objects.filter(category=title)
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignSpecial(request):
     # url:/campaign/pizzas
     title = "Özel Fırsatlar"
-    qy = query(category="Özel Fırsatlar")
-    return render(request, 'pages/campaign.html', {"pizzas" : qy, "title": title})
+    qy = Campaign.objects.filter(category=title)
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 @login_required(login_url="user:login")
 def campaign(request):
@@ -42,14 +41,9 @@ def campaign(request):
     if not request.user.is_superuser:
         messages.info(request, "İzinsiz Giriş!")
         return redirect("/")
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    qy = cur.execute("SELECT * FROM campaign_campaign")
-    campaignList = []
-    for i in qy:
-        campaignList.append(i)
+    qy = Campaign.objects.all() #cur.execute("SELECT * FROM campaign_campaign")
     context = {
-        "campaigns":campaignList
+        "campaigns":qy
     }
     return render(request,"user_operation/admin/campaign.html",context)
 
@@ -102,17 +96,3 @@ def campaignDelete(request, id):
     campaignModel.delete()
     messages.success(request,"Kampanya Silindi!.")
     return redirect("/campaign/admin/campaign/")
-
-
-
-# functions
-
-def query(category=None):
-    # kategoriye gore sorgu yapar.
-    con = sqlite3.connect('db.sqlite3')
-    cur = con.cursor()
-    if category == None:
-        query = cur.execute("SELECT * FROM campaign_campaign")
-    else:
-        query = cur.execute("SELECT * FROM campaign_campaign where category = ?", (category,))
-    return query

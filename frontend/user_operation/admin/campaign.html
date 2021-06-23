@@ -42,14 +42,14 @@
     </tr>
   </thead>
   <tbody>
-      {% for id,imageUrl,title,price,category in campaigns %}
+      {% for campaign in campaigns %}
       <tr>
-        <th scope="row"><img src="{{imageUrl}}" alt=""></th>
-        <td>{{title|truncatechars:10}}</td>
-        <td>{{category|truncatechars:10}}</td>
-        <td>{{price}} TL</td>
-        <td><a href="{% url 'campaign:campaignEdit' id %}"><i class="fas fa-edit"></i></a></td>
-        <td><a href="{% url 'campaign:campaignDelete' id %}"><i class="fas fa-trash"></i></a></td>
+        <th scope="row"><img src="{{campaign.imageUrl}}" alt=""></th>
+        <td>{{campaign.title|truncatechars:10}}</td>
+        <td>{{campaign.category|truncatechars:10}}</td>
+        <td>{{campaign.price}} TL</td>
+        <td><a href="{% url 'campaign:campaignEdit' campaign.id %}"><i class="fas fa-edit"></i></a></td>
+        <td><a href="{% url 'campaign:campaignDelete' campaign.id %}"><i class="fas fa-trash"></i></a></td>
       </tr>
       {% endfor %}
     

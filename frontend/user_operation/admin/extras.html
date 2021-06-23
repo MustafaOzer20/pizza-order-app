@@ -42,14 +42,14 @@
     </tr>
   </thead>
   <tbody>
-      {% for id,imageUrl,title,contents,price,category in extras %}
+      {% for extra in extras %}
       <tr>
-        <th scope="row"><img src="{{imageUrl}}" alt=""></th>
-        <td>{{title|truncatechars:10}}</td>
-        <td>{{category|truncatechars:10}}</td>
-        <td>{{price}} TL</td>
-        <td><a href="{% url 'extras:extraEdit' id %}"><i class="fas fa-edit"></i></a></td>
-        <td><a href="{% url 'extras:extraDelete' id %}"><i class="fas fa-trash"></i></a></td>
+        <th scope="row"><img src="{{extra.imageUrl}}" alt=""></th>
+        <td>{{extra.title|truncatechars:10}}</td>
+        <td>{{extra.category|truncatechars:10}}</td>
+        <td>{{extra.price}} TL</td>
+        <td><a href="{% url 'extras:extraEdit' extra.id %}"><i class="fas fa-edit"></i></a></td>
+        <td><a href="{% url 'extras:extraDelete' extra.id %}"><i class="fas fa-trash"></i></a></td>
       </tr>
       {% endfor %}
     

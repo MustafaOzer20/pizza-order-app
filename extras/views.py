@@ -1,6 +1,5 @@
 from extras.models import Extra
 from extras.forms import ExtraForm
-import sqlite3
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 def index(request):
     title = "Extralar&İçecekler"
-    qy = query()
+    qy = Extra.objects.all()
     context = {
         "products":qy,
         "title": title
@@ -18,7 +17,7 @@ def index(request):
 
 def extrasWrap(request):
     title = "Dürümler"
-    qy = query(category="Dürümler")
+    qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -27,7 +26,7 @@ def extrasWrap(request):
 
 def extrasSnack(request):
     title = "Atıştırmalık & Sos"
-    qy = query(category="Atıştırmalık & Sos")
+    qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -36,7 +35,7 @@ def extrasSnack(request):
 
 def extrasMacaroni(request):
     title = "Makarnalar"
-    qy = query(category="Makarnalar")
+    qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -45,7 +44,7 @@ def extrasMacaroni(request):
 
 def extrasDrinks(request):
     title = "İçecekler"
-    qy = query(category="İçecekler")
+    qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -54,7 +53,7 @@ def extrasDrinks(request):
 
 def extrasDesserts(request):
     title = "Tatlılar"
-    qy = query(category="Tatlılar")
+    qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -67,14 +66,10 @@ def extras(request):
     if not request.user.is_superuser:
         messages.info(request, "İzinsiz Giriş!")
         return redirect("/")
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    qy = cur.execute("SELECT * FROM extras_extra")
-    extrasList = []
-    for i in qy:
-        extrasList.append(i)
+    qy = Extra.objects.all()
+
     context = {
-        "extras":extrasList
+        "extras":qy
     }
     return render(request,"user_operation/admin/extras.html",context)
 
@@ -128,14 +123,3 @@ def extraDelete(request, id):
     extraModel.delete()
     messages.success(request,"Extra Silindi!.")
     return redirect("/extras/admin/extras/")
-    
-# functions
-def query(category=None):
-    # kategoriye gore sorgu yapar.
-    con = sqlite3.connect('db.sqlite3')
-    cur = con.cursor()
-    if category == None:
-        query = cur.execute("SELECT * FROM extras_extra")
-    else:
-        query = cur.execute("SELECT * FROM extras_extra where category = ?", (category,))
-    return query

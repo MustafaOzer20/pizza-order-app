@@ -16,11 +16,11 @@
         <div class="col-md-6 offset-md-3">
             <div class="order-card">
                 <div class="row" id="orderInfo">
-                    OrderId değeri: {{ord.0}} <br>
+                    OrderId değeri: {{ord.id}} <br>
                         <div class="status">
-                        {% if ord.10 == 3 %}
+                        {% if ord.status == 3 %}
                            Şuanki Durum : <span style="color: green;">Teslim Edildi.</span>
-                        {% elif ord.10 == 2 %}
+                        {% elif ord.status == 2 %}
                             Şuanki Durum : <span style="color: rgb(0, 47, 255);">Yolda.</span>
                         {% else  %}
                             Şuanki Durum : <span style="color: rgb(238, 255, 0);">Hazırlanıyor.</span>       
@@ -29,8 +29,8 @@
                 </div>
                 <div class="row" id="result">
                 <div>
-                    <div class="col"><div class="text-muted">{{ord.9}}</div></div>
-                    <div class="col"><div class="result">Toplam {{ord.6}} TL</div></div>
+                    <div class="col"><div class="text-muted">{{ord.created_date}}</div></div>
+                    <div class="col"><div class="result">Toplam {{ord.sum_price}} TL</div></div>
                 </div>
                 </div>
                 <div class="col-md-6 offset-md-3">
@@ -40,42 +40,42 @@
                         <button class="btn btn-warning" type="submit">Durumu Güncelle</button>
                     </form>
                 </div>
-        {% for item in ord.3 %}
+        {% for item,size,piece in ord.productIds %}
         <div id="pizza-item" class="row border-top border-bottom">
             <div class="row main align-items-center">
-                <div class="col-2"><img class="img-fluid" src="{{item.2}}"></div>
+                <div class="col-2"><img class="img-fluid" src="{{item.imageUrl}}"></div>
                     <div class="order-content">
                         <div id="title" class="col">
-                            <div class="row"><h5>{{item.0|truncatechars:10}}</h5></div>
+                            <div class="row"><h5>{{item.title|truncatechars:10}}</h5></div>
                         </div>
                     </div>
                     <div class="order-content">
-                        {% if item.3 == 3 %}
+                        {% if size == 3 %}
                             <div class="col">Büyük Boy</div>
-                        {% elif item.3 == 2 %}
+                        {% elif size == 2 %}
                             <div class="col">Orta Boy</div>
-                        {% elif item.3 == 1 %}
+                        {% elif size == 1 %}
                             <div class="col">Küçük Boy</div>
                         {% endif %}
                     </div>
                     <div class="order-content">
-                        <div class="col">{{item.4}} adet</div>
+                        <div class="col">{{piece}} adet</div>
                     </div>
                     <div class="order-content">
-                        <div class="col">{{item.1}} TL </div>
+                        <div class="col">{{item.price}} TL </div>
                     </div>
                     </div>
                 </div>
              <hr>
         {% endfor %}
         <div class="author">
-            <span>Müşterinin Adı:</span> {{user.0}} {{user.1}} <br>
-            <span>Adres:</span> {{ord.7}}<br>
-            <span>Tel No:</span> {{ord.8}}<br> 
-            <span>Müşteri Notu:</span> {{ord.12}}<br> 
-            {% if ord.11 == '1' %}
+            <span>Müşterinin Adı:</span> {{user}}<br>
+            <span>Adres:</span> {{ord.adress}}<br>
+            <span>Tel No:</span> {{ord.phone_number}}<br> 
+            <span>Müşteri Notu:</span> {{ord.user_note}}<br> 
+            {% if ord.payment_method == '1' %}
                 <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Nakit)<br> 
-            {% elif ord.11 == '2' %}
+            {% elif ord.payment_method == '2' %}
                 <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Kart)<br> 
             {% else %}
                 <span>Ödeme Yöntemi:</span> Online Ödeme<br>

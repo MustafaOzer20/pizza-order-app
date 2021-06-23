@@ -3,7 +3,6 @@ from pizzas.models import Pizza
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-import sqlite3
 
 
 # Create your views here.
@@ -16,32 +15,32 @@ def index(request):
 def pizzas(request):
     # url:/pizzas/
     title = "Tüm Pizzalar"
-    qy = query()
-    return render(request, 'pages/pizzas.html', {"pizzas" : qy, "title": title})
+    pizzas = Pizza.objects.all()
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
 
 def cazip(request):
     # url:/pizzas/cazip/
     title = "Cazip Pizzalar"
-    qy = query(title)
-    return render(request, 'pages/pizzas.html', {"pizzas" : qy, "title":title})
+    pizzas = Pizza.objects.filter(category=title)
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title":title})
 
 def special(request):
     # url:/pizzas/special/
     title = "Özel Pizzalar"
-    qy = query(title)
-    return render(request, 'pages/pizzas.html', {"pizzas" : qy, "title" : title})
+    pizzas = Pizza.objects.filter(category=title)
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title" : title})
 
 def bolmalzeme(request):
     # url:/pizzas/bolmalzemeli/
     title = "Bol Malzemeli Pizzalar"
-    qy = query(title)
-    return render(request, 'pages/pizzas.html', {"pizzas" : qy, "title": title})
+    pizzas = Pizza.objects.filter(category=title)
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
 
 def gurme(request):
     # url:/pizzas/gurme/
     title = "Gurme Pizzalar"
-    qy = query(title)
-    return render(request, 'pages/pizzas.html', {"pizzas" : qy, "title":title})
+    pizzas = Pizza.objects.filter(category=title)
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title":title})
 
 
 @login_required(login_url="user:login")
@@ -50,18 +49,10 @@ def products(request):
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    qy = cur.execute("SELECT * FROM pizzas_pizza")
-    pizzas = []
-    for i in qy:
-        pizzas.append(i)
-
+    qy =  Pizza.objects.all() #cur.execute("SELECT * FROM pizzas_pizza")
     context = {
-        "pizzas":pizzas
+        "pizzas":qy
     } 
-    cur.close()
-    con.close()
     return render(request, "user_operation/admin/products.html", context)
 
 @login_required(login_url="user:login")
@@ -113,17 +104,4 @@ def productsDelete(request, id):
     pizza.delete()
     messages.success(request,"Ürün Silindi!.")
     return redirect("/user/admin/products/")
-
-
-#functions
-
-def query(category=None):
-    # kategoriye gore sorgu yapar.
-    con = sqlite3.connect('db.sqlite3')
-    cur = con.cursor()
-    if category == None:
-        query = cur.execute("SELECT * FROM pizzas_pizza")
-    else:
-        query = cur.execute("SELECT * FROM pizzas_pizza where category = ?", (category,))
-    return query
 
