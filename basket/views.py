@@ -76,8 +76,8 @@ def payment(request, methodId):
             categoryIds = categoryId
             )
         newOrder.save()
-        qy = BasketItem.objects.filter(userId=request.user.id)#cur.execute("SELECT id FROM basket_basketitem where userId=?",(request.user.id,))
-        for i in qy: # i = (id,)
+        qy = BasketItem.objects.filter(userId=request.user.id)
+        for i in qy:
             i.delete()     
         messages.success(request,"Sipariş Verildi! Siparişiniz 30-40 dakika içerisinde size ulaşacaktır.")
         return redirect('/user/myaccount/siparislerim/')
@@ -212,10 +212,10 @@ def addToBasketExtras(request, id):
 def checkBasketItem(userId, productId, piece, size=None, categoryId=None):
     # urunun aynisi sepette varsa ve boylari ayniysa once adet guncellemesi yapar sonra true doner yoksa false doner
     if categoryId == None:
-        qy = BasketItem.objects.filter(userId=userId,productId=productId) #cur.execute("SELECT piece,size FROM basket_basketitem where userId=? and productId=?",(userId,productId))
+        qy = BasketItem.objects.filter(userId=userId,productId=productId)
     else:
-        qy = BasketItem.objects.filter(userId=userId,productId=productId, categoryId=categoryId)#cur.execute("SELECT piece,size FROM basket_basketitem where userId=? and productId=? and categoryId=?",(userId,productId,categoryId))
-    for item in qy: #item = (piece,size) type:tuple
+        qy = BasketItem.objects.filter(userId=userId,productId=productId, categoryId=categoryId)
+    for item in qy:
         if size == item.size:
             item.piece += piece
             item.save()
@@ -229,7 +229,7 @@ def checkBasketItem(userId, productId, piece, size=None, categoryId=None):
 def checkBasket(request, payment=False):
     # basketteki urunleri, urun sayisini ve toplam fiyati sozluk yapisinda doner
     # eger basket bossa None doner
-    query = BasketItem.objects.filter(userId=request.user.id) #cur.execute("SELECT * FROM basket_basketitem where userId = ?", (request.user.id,))
+    query = BasketItem.objects.filter(userId=request.user.id)
     productId = []
     basketLs = []
     pieces = []
@@ -238,7 +238,7 @@ def checkBasket(request, payment=False):
     basketId = -1
     sumPrice = 0
     for item in query:
-        productId.append(item.productId)   #item = (id,pizzaid,piece,size,userId)
+        productId.append(item.productId)
         basketLs.append(item)
         pieces.append(item.piece)
         try:
@@ -252,11 +252,11 @@ def checkBasket(request, payment=False):
         x = 0
         for i in range(len(productId)):
             if categoryId[i] == 1:
-                product = Pizza.objects.get(id=productId[i]) #cur.execute("SELECT * FROM pizzas_pizza where id = ?", (productId[i],))
+                product = Pizza.objects.get(id=productId[i])
             elif categoryId[i] == 2:
-                product = Campaign.objects.get(id=productId[i]) #cur.execute("SELECT * FROM campaign_campaign where id = ?", (productId[i],))
+                product = Campaign.objects.get(id=productId[i])
             else:
-                product = Extra.objects.get(id=productId[i]) #cur.execute("SELECT * FROM extras_extra where id = ?", (productId[i],))
+                product = Extra.objects.get(id=productId[i])
             if basketLs[x].size == '2': #orta boy
                 product.price -= 10
             elif basketLs[x].size == '1': #kucuk boy

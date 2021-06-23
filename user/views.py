@@ -94,13 +94,12 @@ def myOrders(request):
         sozluk yapisi ile arayuze gonderilir.
 
     """
-    qy = OrderPizza.objects.filter(userId=request.user.id) #cur.execute("SELECT * FROM basket_orderpizza where userId = ?",(request.user.id,))
+    qy = OrderPizza.objects.filter(userId=request.user.id)
     productsIds = []
     orders = []
     categoryIds = []
     j = 0
     for i in qy: 
-        # i = (id,basketId,userId,productsIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method,categoryIds)
         productsIds.append(list(eval(i.productIds)))
         orders.append(i)
         categoryIds.append(list(eval(i.categoryIds)))
@@ -110,16 +109,15 @@ def myOrders(request):
     ordersList = []
     x = 0
     for i in range(len(productsIds)):
-        # orders[x] = (id,basketId,userId,productsIds,size,piece,sum_price,adress,phone_number,created_date,status,user_note,payment_method,categoryIds)
         orders[x].productIds = []
 
         for j in range(len(productsIds[i])):  
             if categoryIds[i][j] == 1:  
-                product = Pizza.objects.get(id=productsIds[i][j]) #cur.execute("SELECT title,price,imageUrl FROM pizzas_pizza where id=?",(productsIds[i][j],))
+                product = Pizza.objects.get(id=productsIds[i][j])
             elif categoryIds[i][j] == 2: 
-                product = Campaign.objects.get(id=productsIds[i][j])#cur.execute("SELECT title,price,imageUrl FROM campaign_campaign where id=?",(productsIds[i][j],))
+                product = Campaign.objects.get(id=productsIds[i][j])
             elif categoryIds[i][j] == 3: 
-                product = Extra.objects.get(id=productsIds[i][j])#cur.execute("SELECT title,price,imageUrl FROM extras_extra where id=?",(productsIds[i][j],))
+                product = Extra.objects.get(id=productsIds[i][j])
             
             size = list(eval(orders[x].size))
             piece = list(eval(orders[x].piece))
@@ -134,7 +132,7 @@ def myOrders(request):
         orders[x].created_date = str(orders[x].created_date)[:16]
         ordersList.append(orders[x])
         x += 1
-    user = User.objects.get(id=request.user.id)#cur.execute("SELECT first_name,last_name FROM auth_user where id = ?", (request.user.id,))
+    user = User.objects.get(id=request.user.id)
     context = {
         "orders": ordersList,
         "user": user
@@ -145,11 +143,11 @@ def myOrders(request):
 def adminDashboard(request):
     # url:/user/admin/dashboard/
     if request.user.is_superuser:
-        qy = OrderPizza.objects.all()#cur.execute("SELECT sum_price, created_date FROM basket_orderpizza")
+        qy = OrderPizza.objects.all()
         daily_earnings = 0
         monthly_income = 0
         annual_earnings = 0
-        for i in qy: # i = (sum_price,created_date) type:tuple
+        for i in qy:
             format = "%Y-%m-%d %H:%M:%S"
             dt_object = datetime.datetime.strptime(str(i.created_date)[:18], format)
             elapsed_time = datetime.datetime.now() - dt_object
@@ -189,7 +187,7 @@ def orders(request):
         order.status = status
         order.save()
         return redirect("/user/admin/orders")
-    qy = OrderPizza.objects.all() #cur.execute("SELECT * FROM basket_orderpizza")
+    qy = OrderPizza.objects.all()
     productsIds = []
     categoryIds = []
     orders = []

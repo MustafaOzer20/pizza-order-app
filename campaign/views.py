@@ -65,7 +65,7 @@ def campaign(request):
     if keyword:
         qy = Campaign.objects.filter(title__contains=keyword)
     else:
-        qy = Campaign.objects.all() #cur.execute("SELECT * FROM campaign_campaign")
+        qy = Campaign.objects.all()
     context = {
         "campaigns":qy
     }

@@ -73,7 +73,7 @@ def products(request):
     if keyword:
         qy = Pizza.objects.filter(title__contains = keyword)
     else:
-        qy =  Pizza.objects.all() #cur.execute("SELECT * FROM pizzas_pizza")
+        qy =  Pizza.objects.all()
     context = {
         "pizzas":qy
     } 
