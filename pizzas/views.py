@@ -15,31 +15,51 @@ def index(request):
 def pizzas(request):
     # url:/pizzas/
     title = "Tüm Pizzalar"
-    pizzas = Pizza.objects.all()
+    keyword = request.GET.get("keyword")
+    if not keyword:
+        pizzas = Pizza.objects.all()
+    else:
+        pizzas = Pizza.objects.filter(title__contains=keyword)
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
 
 def cazip(request):
     # url:/pizzas/cazip/
     title = "Cazip Pizzalar"
-    pizzas = Pizza.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if not keyword:
+        pizzas = Pizza.objects.filter(category=title)
+    else:
+        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title":title})
 
 def special(request):
     # url:/pizzas/special/
     title = "Özel Pizzalar"
-    pizzas = Pizza.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if not keyword:
+        pizzas = Pizza.objects.filter(category=title)
+    else:
+        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title" : title})
 
 def bolmalzeme(request):
     # url:/pizzas/bolmalzemeli/
     title = "Bol Malzemeli Pizzalar"
-    pizzas = Pizza.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if not keyword:
+        pizzas = Pizza.objects.filter(category=title)
+    else:
+        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
 
 def gurme(request):
     # url:/pizzas/gurme/
     title = "Gurme Pizzalar"
-    pizzas = Pizza.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if not keyword:
+        pizzas = Pizza.objects.filter(category=title)
+    else:
+        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title":title})
 
 
@@ -49,7 +69,11 @@ def products(request):
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
-    qy =  Pizza.objects.all() #cur.execute("SELECT * FROM pizzas_pizza")
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Pizza.objects.filter(title__contains = keyword)
+    else:
+        qy =  Pizza.objects.all() #cur.execute("SELECT * FROM pizzas_pizza")
     context = {
         "pizzas":qy
     } 

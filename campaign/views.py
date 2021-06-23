@@ -8,31 +8,51 @@ from campaign.forms import CampaignForm, Campaign
 def index(request):
     # url:/campaign/
     title = "Kampanyalar"
-    qy = Campaign.objects.all()
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Campaign.objects.filter(title__contains=keyword)
+    else:
+        qy = Campaign.objects.all()
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignWrap(request):
     # url:/campaign/wrap
     title = "Dürümler"
-    qy = Campaign.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Campaign.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Campaign.objects.filter(category=title)
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignPizzas(request):
     # url:/campaign/pizzas
     title = "Pizzalar"
-    qy = Campaign.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Campaign.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Campaign.objects.filter(category=title)
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignMacaroni(request):
     # url:/campaign/pizzas
     title = "Makarnalar"
-    qy = Campaign.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Campaign.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Campaign.objects.filter(category=title)
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignSpecial(request):
     # url:/campaign/pizzas
     title = "Özel Fırsatlar"
-    qy = Campaign.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Campaign.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Campaign.objects.filter(category=title)
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 @login_required(login_url="user:login")
@@ -41,7 +61,11 @@ def campaign(request):
     if not request.user.is_superuser:
         messages.info(request, "İzinsiz Giriş!")
         return redirect("/")
-    qy = Campaign.objects.all() #cur.execute("SELECT * FROM campaign_campaign")
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Campaign.objects.filter(title__contains=keyword)
+    else:
+        qy = Campaign.objects.all() #cur.execute("SELECT * FROM campaign_campaign")
     context = {
         "campaigns":qy
     }

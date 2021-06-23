@@ -8,7 +8,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 def index(request):
     title = "Extralar&İçecekler"
-    qy = Extra.objects.all()
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword)
+    else:
+        qy = Extra.objects.all()
     context = {
         "products":qy,
         "title": title
@@ -17,7 +21,11 @@ def index(request):
 
 def extrasWrap(request):
     title = "Dürümler"
-    qy = Extra.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -26,7 +34,11 @@ def extrasWrap(request):
 
 def extrasSnack(request):
     title = "Atıştırmalık & Sos"
-    qy = Extra.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -35,7 +47,11 @@ def extrasSnack(request):
 
 def extrasMacaroni(request):
     title = "Makarnalar"
-    qy = Extra.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -44,7 +60,11 @@ def extrasMacaroni(request):
 
 def extrasDrinks(request):
     title = "İçecekler"
-    qy = Extra.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -53,7 +73,11 @@ def extrasDrinks(request):
 
 def extrasDesserts(request):
     title = "Tatlılar"
-    qy = Extra.objects.filter(category=title)
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword, category=title)
+    else:
+        qy = Extra.objects.filter(category=title)
     context = {
         "products":qy,
         "title": title
@@ -66,7 +90,12 @@ def extras(request):
     if not request.user.is_superuser:
         messages.info(request, "İzinsiz Giriş!")
         return redirect("/")
-    qy = Extra.objects.all()
+    
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword)
+    else:
+        qy = Extra.objects.all()
 
     context = {
         "extras":qy
