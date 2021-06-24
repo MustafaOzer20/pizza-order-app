@@ -1,0 +1,25 @@
+ul.nav{
+    margin-top: 10px;
+    margin-left: 33px;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 20px;
+  }
+  ul.nav a{
+    color: orange;
+  }
+  li.nav-item a.nav-link.active{
+    background-color: orange;
+    color: #fff;
+  }
+  @media (max-width:545px){
+    ul.nav{
+    margin-left: 0;
+    padding: 15px;
+  }
+  }
+  @media (max-width:504px){
+    ul.nav{
+    font-size: 11px;
+  }
+  }

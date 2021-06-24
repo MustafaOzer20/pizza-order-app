@@ -55,6 +55,7 @@
     color: #fff;
     background:  rgb(0, 65, 117);
 }
+  
 @media(max-width: 1139px){
     .grid-container {
         justify-content: center;
