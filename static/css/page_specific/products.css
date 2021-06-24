@@ -18,3 +18,16 @@ th img{
 td a i{
     color: orange;
 }
+a.admin-btn i{
+    margin: 5px;
+}
+a.admin-btn{
+    border-radius: 30px;
+    padding: 20px;
+    background: orange;
+    color: #fff;
+    text-decoration: none;
+}
+#add{
+    margin: 30px;
+}
