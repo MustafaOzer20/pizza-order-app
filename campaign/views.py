@@ -36,7 +36,7 @@ def campaignPizzas(request):
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignMacaroni(request):
-    # url:/campaign/pizzas
+    # url:/campaign/makarnalar
     title = "Makarnalar"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -46,7 +46,7 @@ def campaignMacaroni(request):
     return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 def campaignSpecial(request):
-    # url:/campaign/pizzas
+    # url:/campaign/special
     title = "Özel Fırsatlar"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -73,7 +73,7 @@ def campaign(request):
 
 @login_required(login_url="user:login")
 def campaignAdd(request):
-    # url:/user/admin/campaign/add/
+    # url:/campaign/admin/campaign/add/
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -92,7 +92,7 @@ def campaignAdd(request):
 
 @login_required(login_url="user:login")
 def campaignEdit(request, id):
-    # url:/user/admin/campaign/edit/<int:id>
+    # url:/campaign/admin/campaign/edit/<int:id>
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -112,7 +112,7 @@ def campaignEdit(request, id):
 
 @login_required(login_url="user:login")
 def campaignDelete(request, id):
-    # url:/user/admin/campaign/delete/<int:id>
+    # url:/campaign/admin/campaign/delete/<int:id>
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")

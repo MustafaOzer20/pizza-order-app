@@ -114,7 +114,7 @@ def updateReducePiece(request, id):
 
 @login_required(login_url='user:login')
 def addToBasketCampaign(request, id):
-    # url:/pizzas/addtobasket/<int:id>
+    # url:/basket/addtobasket/campaign/<int:id>
     """
         gonderilen id ile urunun bilgilerini ceker
         1.get request
@@ -144,7 +144,7 @@ def addToBasketCampaign(request, id):
 
 @login_required(login_url='user:login')
 def addToBasketPizza(request, id):
-    # url:/pizzas/addtobasket/<int:id>
+    # url:/basket/addtobasket/pizza/<int:id>
     """
         gonderilen id ile urunun bilgilerini ceker
         1.get request
@@ -176,7 +176,7 @@ def addToBasketPizza(request, id):
 
 @login_required(login_url='user:login')
 def addToBasketExtras(request, id):
-    # url:/extras/addtobasket/<int:id>
+    # url:/basket/addtobasket/extras/<int:id>
     """
         gonderilen id ile urunun bilgilerini ceker
         1.get request

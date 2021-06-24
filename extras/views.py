@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 # Create your views here.
 
 def index(request):
+    # url:/extras/ 
     title = "Extralar&İçecekler"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -20,6 +21,7 @@ def index(request):
     return render(request, "pages/extras.html",context)
 
 def extrasWrap(request):
+    # url:/extras/wraps
     title = "Dürümler"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -33,6 +35,7 @@ def extrasWrap(request):
     return render(request, "pages/extras.html",context)
 
 def extrasSnack(request):
+    # url:/extras/atistirmaliklar
     title = "Atıştırmalık & Sos"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -46,6 +49,7 @@ def extrasSnack(request):
     return render(request, "pages/extras.html",context)
 
 def extrasMacaroni(request):
+    # url:/extras/makarnalar
     title = "Makarnalar"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -59,6 +63,7 @@ def extrasMacaroni(request):
     return render(request, "pages/extras.html",context)
 
 def extrasDrinks(request):
+    # url:/extras/icecekler
     title = "İçecekler"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -72,6 +77,7 @@ def extrasDrinks(request):
     return render(request, "pages/extras.html",context)
 
 def extrasDesserts(request):
+    # url:/extras/tatlilar
     title = "Tatlılar"
     keyword = request.GET.get("keyword")
     if keyword:
@@ -105,7 +111,7 @@ def extras(request):
 
 @login_required(login_url="user:login")
 def extraAdd(request):
-    # url:/user/admin/campaign/add/
+    # url:/extras/admin/extras/add/
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -124,7 +130,7 @@ def extraAdd(request):
 
 @login_required(login_url="user:login")
 def extraEdit(request, id):
-    # url:/user/admin/campaign/edit/<int:id>
+    # url:/extras/admin/extras/edit/<int:id>
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -144,7 +150,7 @@ def extraEdit(request, id):
 
 @login_required(login_url="user:login")
 def extraDelete(request, id):
-    # url:/user/admin/campaign/delete/<int:id>
+    # url:/extras/admin/extras/delete/<int:id>
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")

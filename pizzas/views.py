@@ -65,7 +65,7 @@ def gurme(request):
 
 @login_required(login_url="user:login")
 def products(request):
-    # url:/user/admin/products/
+    # url:/pizzas/admin/products/
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -81,7 +81,7 @@ def products(request):
 
 @login_required(login_url="user:login")
 def productsEdit(request, id):
-    # url:/user/admin/products/edit/<int:id>
+    # url:/pizzas/admin/products/edit/<int:id>
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -101,7 +101,7 @@ def productsEdit(request, id):
 
 @login_required(login_url="user:login")
 def productsAdd(request):
-    # url:/user/admin/products/add/
+    # url:/pizzas/admin/products/add/
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
@@ -120,7 +120,7 @@ def productsAdd(request):
 
 @login_required(login_url="user:login")
 def productsDelete(request, id):
-    # url:/user/admin/products/delete/<int:id>
+    # url:/pizzas/admin/products/delete/<int:id>
     if not request.user.is_superuser:
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
