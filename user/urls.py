@@ -18,7 +18,12 @@ urlpatterns = [
     path('admin/orders/', views.orders, name="orders"),
     path('admin/dashboard/', views.adminDashboard, name="dashboard"),
 
-    
+    #emailverify
+    path('activate/<str:uidb64>/<str:token>',views.activate, name="activate"),
+
+    #forgot password
+    path('forget/password/',views.forgetPassword, name="forgot"),
+    path('forget/password/<str:uidb64>/<str:token>',views.changePasswdtoForget, name="changeForgot"),
 
     #change
     path('change/username/', views.usernameChange, name="usernameChange"),

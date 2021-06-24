@@ -135,3 +135,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4' #bootstrap4 kütüphanesini seçtik
+
+with open("secret.txt","r",encoding="UTF-8") as file:
+    info = file.read().split(",")
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = info[0]
+EMAIL_HOST_PASSWORD = info[1]
+EMAIL_PORT = 587

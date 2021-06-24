@@ -5,6 +5,27 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Parola", widget=forms.PasswordInput)
 
 
+class ForgetPasswdForm(forms.Form):
+    email = forms.EmailField(max_length=254)
+    def clean(self):
+        email = self.cleaned_data.get("email")
+        values = {"email":email}
+        return values
+
+
+class ChangeForgotPasswd(forms.Form):
+    password = forms.CharField(min_length=8, max_length=20,label="Parola", widget=forms.PasswordInput)
+    confirm = forms.CharField(min_length=8, max_length=20, label="Parolayı Doğrula", widget=forms.PasswordInput)
+    def clean(self):
+        password = self.cleaned_data.get("password")
+        confirm = self.cleaned_data.get("confirm")
+        if password and confirm and password != confirm:
+            raise forms.ValidationError("Parolalar Eşleşmiyor")
+
+        values = {
+            "password": password,
+        }
+        return values
 
 class RegisterForm(forms.Form):
     username = forms.CharField(min_length=3, max_length=20,label="Kullanıcı Adı")
@@ -33,6 +54,8 @@ class RegisterForm(forms.Form):
             "password": password,
         }
         return values
+
+
 
 class changeEmailForm(forms.Form):
     email = forms.EmailField(max_length=254, label="Yeni Email")

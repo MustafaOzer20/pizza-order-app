@@ -22,28 +22,10 @@
             <form method="POST">
                 {% csrf_token %}
                 {{form | crispy}}
-
-                <a href="{% url 'user:forgot' %}">Parolanı mı unuttun?</a> <br><br>
-                <button type="submit" class="btn btn-warning">Giriş Yap</button>
+                <button type="submit" class="btn btn-warning">Mail Gönder</button>
             </form>
             <br>
-            <a href="{% url 'user:register' %}">Hesabın Yok mu? Kayıt ol</a>
         </div>
     </div>
 </div>
 {% endblock body %}
-
-<!--
-    <div class="row">
-  <div class="col-md-6 offset-md-3">
-  <h2>Giriş Yap</h2> <hr>
-  <form method="POST">
-    {% csrf_token %}
-    {{form | crispy}}
-    <br>
-    <button type="submit" class="btn btn-primary">Giriş Yap</button>
-</form>
-<a href="/user/register">Kayıt ol</a>
-</div>
-</div>
--->

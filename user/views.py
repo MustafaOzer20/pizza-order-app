@@ -3,15 +3,19 @@ from extras.models import Extra
 from campaign.models import Campaign
 from pizzas.models import Pizza
 from basket.forms import AdminForm
-from django.shortcuts import render,redirect
-from .forms import LoginForm, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
+from django.shortcuts import render,redirect,HttpResponse
+from .forms import ChangeForgotPasswd, ForgetPasswdForm, LoginForm, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout,get_user_model
 from django.contrib.auth.decorators import login_required
 import datetime
-
-
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from .tokens import account_activation_token
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes, force_text
+from django.template.loader import render_to_string
 
 
 # Create your views here.
@@ -20,29 +24,93 @@ def register(request):
     if str(request.user) == "AnonymousUser": # kullanici giris yapmamissa True
         form = RegisterForm(request.POST or None)
         if form.is_valid():
+            email = form.cleaned_data.get('email')
             username = form.cleaned_data.get("username")
             first_name = form.cleaned_data.get("first_name")
             last_name = form.cleaned_data.get("last_name")
-            email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
-            newUser = User(username = username, first_name=first_name, last_name=last_name, email=email)
-            newUser.set_password(password)
-            try:
-                newUser.save()
-            except:
-                messages.info(request,"Email Kullanılıyor.")
-                return redirect("/user/register/")
-            login(request,newUser)
-            messages.success(request,"Kaydınız Başarılı! Artık Sizde PizzaS ailesindensiniz.")
-            return redirect('/')
-        
-        form = RegisterForm()
+            user = User(username=username, first_name=first_name, last_name=last_name, email=email)
+            user.set_password(password)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('email_template.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': account_activation_token.make_token(user),
+            })
+            send_mail(mail_subject, message, 'pizzaspizza.company@gmail.com', [email])
+            return HttpResponse('Please confirm your email address to complete the registration')
         context = {
             "form": form
         }
         return render(request, "user_operation/normal_user/register.html", context)
     else:
         return redirect("/")
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request,"Thank you for your email confirmation. Now you can login your account.")
+        login(request,user)
+        return redirect("/")
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+
+def forgetPassword(request):
+    form = ForgetPasswdForm(request.POST or None)
+    context = {"form":form}
+    if form.is_valid():
+        email = form.cleaned_data.get("email")
+        try:
+            user = User.objects.get(email=email)
+        except:
+            messages.info(request,"Böyle Bir Kullanıcı Bulunamadı")
+            return redirect("/user/login")
+        current_site = get_current_site(request)
+        mail_subject = 'Change Password'
+        message = render_to_string('passwd_template.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': account_activation_token.make_token(user),
+        })
+        send_mail(mail_subject, message, 'pizzaspizza.company@gmail.com', [email])
+        messages.success(request,'Mailinize link gönderildi. Linke tıklayarak şifrenizi değiştirebilirsiniz.')
+        return redirect('/user/login/')
+
+    return render(request,"user_operation/normal_user/forgotPasswd.html",context)
+
+def changePasswdtoForget(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        form = ChangeForgotPasswd(request.POST or None)
+        context = {"form":form}
+        if form.is_valid():
+            password = form.cleaned_data.get("password")
+            user.set_password(password)
+            user.save()
+            messages.success(request,"Şifreniz Başarıyla Değiştirildi")
+            login(request,user)
+            return redirect("/")
+        return render(request,"user_operation/normal_user/changePasswd.html",context)
+    else:
+        return HttpResponse('Geçersiz URL!')
 
 def loginUser(request):
     # url:/user/login/
