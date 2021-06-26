@@ -5,11 +5,17 @@
     <title>PizzaS | Siparişlerim</title>
     
     <link rel="stylesheet" href="{% static 'css/page_specific/myorders.css' %}">
+    <style>
+        .ratings{
+            margin:20px;
+        }
+    </style>
 {% endblock baslik %}
     
 
 
 {% block body %}
+{% load crispy_forms_tags %}
 {% if orders %}
     {% for ord in orders %}
         <div class="col-md-6 offset-md-3">
@@ -27,7 +33,7 @@
                     {% else %}
                         <div class="col" id="status-not"><i class="fas fa-stopwatch"></i><span>Hazırlanıyor</span></div>
                     {% endif %}</div>
-                </div>
+                </div><hr>
         {% for item,size,piece,categoryId in ord.productIds %}
         <div id="pizza-item" class="row border-top border-bottom">
             <div class="row main align-items-center">
@@ -53,6 +59,12 @@
                     <div class="order-content">
                         <div class="col">{{item.price}} TL </div>
                     </div>
+                    <div class="ratings">
+                        {% if categoryId == 1 %}
+                        <a class="btn btn-warning" href="{% url 'pizzas:ratings' item.id %}">Değerlendir</a>
+                        {% endif %}
+                        
+                    </div>
                     </div>
                 </div>
              <hr>
@@ -69,6 +81,5 @@
     </div>
 </div>
 {% endif %}
-
 
 {% endblock body %}

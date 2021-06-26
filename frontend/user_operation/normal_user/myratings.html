@@ -1,0 +1,160 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+<title>PizzaS | Siparişlerim</title>
+
+<link rel="stylesheet" href="{% static 'css/page_specific/myorders.css' %}">
+<link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .flip-card {
+        background-color: transparent;
+        width: 300px;
+        height: 300px;
+        perspective: 1000px;
+    }
+
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .flip-card-front {
+        background-color: #fff;
+        color: black;
+    }
+
+    .flip-card-back {
+        padding: 20px;
+        background-color: #2980b9;
+        color: white;
+        transform: rotateY(180deg);
+    }
+
+    .flip-card-front img {
+        object-fit: cover;
+        width: 100%;
+        height: 100px;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .rate {
+        display: inline;
+        margin-bottom: 20px;
+    }
+    .pizza{
+        padding:20px 20px 0 20px;
+    }
+    .pizza p{
+        font-size: 12px;
+
+    }
+    .forMobil{
+        display:none;
+    }
+    @media(max-width:500px){
+        .forMobil{
+            display:block;
+            font-size:10px;
+        }
+    }
+</style>
+{% endblock baslik %}
+
+
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% if ratings %}
+<div class="pizza-list">
+    <div class="grid-container">
+        {% for rate in ratings %}
+        <div class="grid-item">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src={{rate.productId.imageUrl}}></img>
+                        <div class="pizza">
+                            <h5>{{rate.productId.title}}</h5>
+                            <p>{{rate.productId.contents}}</p>
+                            <span class="price">{{rate.productId.price}} TL</span> <br>
+                            <span class="forMobil">Kartı Çevirmek İçin Tıkla</span>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        {{rate.comment}} <br>
+                        <div class="rate">
+                            <span class="fa fa-star checked"></span>
+                            {% if rate.ratings != 1 %}
+                            <span class="fa fa-star checked"></span>
+                            {% if rate.ratings != 2 %}
+                            <span class="fa fa-star checked"></span>
+                            {% if rate.ratings != 3 %}
+                            <span class="fa fa-star checked"></span>
+                            {% if rate.ratings != 4 %}
+                            <span class="fa fa-star checked"></span>
+                            {% else %}
+                            <span class="fa fa-star"></span>
+                            {% endif %}
+                            {% else %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            {% endif %}
+                            {% else %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            {% endif %}
+                            {% else %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+</div>
+{% else %}
+<div class="empty-list-container">
+    <div class="empty-list">
+        <center>
+            <div class="circle"><i class="fas fa-history"></i></div>
+        </center>
+        <center>
+            <p>Değerlendirme Kaydınız Bulunmamaktadır.</p>
+        </center>
+        <center><a class="goto-back" href="{% url 'user:myorders' %}">Hemen Değerlendirme Yap</a></center>
+    </div>
+</div>
+{% endif %}
+
+{% endblock body %}

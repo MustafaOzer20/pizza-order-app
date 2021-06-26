@@ -1,0 +1,5 @@
+{% autoescape off %}
+Hi ,
+Please click on the link to change email,
+http://{{ domain }}{% url 'user:emailChangeToken' uid token %}
+{% endautoescape %}

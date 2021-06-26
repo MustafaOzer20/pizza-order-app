@@ -2,7 +2,12 @@
 {% load static %}
 
 {% block baslik %}
+    {% if title %}
+    <title>PizzaS | {{title}}</title>
+    {% else %}
     <title>PizzaS | Parola Değiştir</title>
+    {% endif %}
+    
    <link rel="stylesheet" href="{% static 'css/page_specific/addProduct.css' %}">
 {% endblock baslik %}
     

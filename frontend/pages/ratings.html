@@ -1,0 +1,27 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+    <title>PizzaS | Değerlendir</title>
+    <link rel="stylesheet" href="{% static 'css/page_specific/addtoBasket.css' %}">
+{% endblock baslik %}
+    
+
+
+{% block body %}
+{% load crispy_forms_tags %} 
+<div class="col-md-6 offset-md-3">
+<h2 class="title">{{product.title}}</h2>
+
+<div class="single-card">
+    <img src="{{product.imageUrl}}" alt="">
+    <p>{{product.contents}}</p>
+    <span>{{product.price}} TL</span>
+</div></div>
+<div class="col-md-6 offset-md-3">
+<form method="post">
+    {% csrf_token %}
+    {{form | crispy}} <br>
+    <button type="submit" class="btn btn-warning">Submit</button>
+</form></div>
+{% endblock body %}

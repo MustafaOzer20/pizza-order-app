@@ -191,6 +191,7 @@
         <div id="myDropdown" class="dropdown-content">
            <a href="{% url 'basket:basketItems' %}"><i class="fas fa-shopping-cart"></i>Sepetim</a>
            <a href="{% url 'user:myorders' %}"><i class="fas fa-history"></i>Siparişlerim</a>
+           <a href="{% url 'pizzas:myratings' %}"><i class="far fa-smile"></i>Ratings</a>
             <a href="{% url 'user:profile' %}"><i class="fas fa-user"></i>Hesabım</a>
             {% if request.user.is_superuser %}
                 <a href="{% url 'user:dashboard' %}"><i class="fas fa-user-shield"></i>Admin</a>

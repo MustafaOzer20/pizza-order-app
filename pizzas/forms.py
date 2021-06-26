@@ -4,4 +4,4 @@ from django import forms
 class PizzaForm(forms.ModelForm):
     class Meta:
         model = Pizza
-        fields = '__all__'
+        fields = ('title','contents','price','imageUrl','category')

@@ -6,6 +6,15 @@
     <link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
     <link rel="stylesheet" href="{% static 'css/searchbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/category_nav.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      .ratings{
+        margin:15px;
+      }
+      .checked {
+        color: orange;
+    }
+    </style>
 {% endblock baslik %}
     
 
@@ -63,8 +72,43 @@
             <h2>{{pizza.title}}</h2>
             <span class="contents">{{pizza.contents}}</span>
             <span class="price">{{pizza.price}} TL</span>
-            <a href="{% url 'basket:addToBasketPizza' pizza.id %}">Sipariş Ver</a>
+            <a href="{% url 'basket:addToBasketPizza' pizza.id %}">Sipariş Ver</a> <br>
           </div>
+          {% if pizza.forRating %}
+          <div class="rate">
+                <span class="fa fa-star checked"></span>
+                {% if pizza.forRating > 1.0 %}
+                <span class="fa fa-star checked"></span>
+                {% if pizza.forRating > 2.0 %}
+                <span class="fa fa-star checked"></span>
+                {% if pizza.forRating > 3.0 %}
+                <span class="fa fa-star checked"></span>
+                {% if pizza.forRating > 4.0 %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                <span>({{pizza.forRating}})</span>
+            </div>
+          {% else %}
+          {% endif %}
+          
+          <a class="ratings" href="{% url 'pizzas:productRatings' pizza.id %}">Değerlendirmeler</a>
         </div>
         </div>
     {% endfor %}

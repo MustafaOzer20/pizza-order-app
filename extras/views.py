@@ -1,3 +1,4 @@
+from basket.models import BasketItem, OrderPizza
 from extras.models import Extra
 from extras.forms import ExtraForm
 from django.contrib import messages
@@ -155,6 +156,18 @@ def extraDelete(request, id):
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
     extraModel = get_object_or_404(Extra,id = id)
+    orders = OrderPizza.objects.all()
+    for i in orders:
+        idList = list(eval(i.productIds))
+        categoryList = list(eval(i.categoryIds))
+        for j in range(len(idList)):
+            if idList[j] == id and categoryList[j] == 2:
+                i.delete()
+    try:
+        item = BasketItem.objects.get(productId=id)
+        item.delete()
+    except:
+        pass
     extraModel.delete()
     messages.success(request,"Extra Silindi!.")
     return redirect("/extras/admin/extras/")

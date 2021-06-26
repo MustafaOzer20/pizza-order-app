@@ -4,7 +4,7 @@ from campaign.models import Campaign
 from pizzas.models import Pizza
 from basket.forms import AdminForm
 from django.shortcuts import render,redirect,HttpResponse
-from .forms import ChangeForgotPasswd, ForgetPasswdForm, LoginForm, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
+from .forms import ChangeForgotPasswd, ForgetPasswdForm, LoginForm, OrderRatings, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout,get_user_model
@@ -162,6 +162,7 @@ def myOrders(request):
         sozluk yapisi ile arayuze gonderilir.
 
     """
+    form = OrderRatings(request.POST or None)
     qy = OrderPizza.objects.filter(userId=request.user.id)
     productsIds = []
     orders = []
@@ -203,15 +204,42 @@ def myOrders(request):
     user = User.objects.get(id=request.user.id)
     context = {
         "orders": ordersList,
-        "user": user
+        "user": user,
+        "form":form
     }
     return render(request, "user_operation/normal_user/myorders.html", context)
+
+
+from django.db.models import Max, Min
+def statistic():
+    orders = OrderPizza.objects.all()
+    productPieces = 0
+    for i in orders:
+        pieceList = list(eval(i.piece))
+        for j in pieceList:
+            productPieces += j
+
+    best_selling = Pizza.objects.aggregate(Max('salesCount'))
+    worst_selling = Pizza.objects.aggregate(Min('salesCount'))
+
+    best_pizza = Pizza.objects.filter(salesCount=best_selling['salesCount__max'])
+    best_pizza = best_pizza[0]
+
+    worst_pizza = Pizza.objects.filter(salesCount=worst_selling['salesCount__min'])
+    worst_pizza = worst_pizza[0]
+
+    salesCountMax = best_selling['salesCount__max']
+    salesCountMin = worst_selling['salesCount__min']
+
+    return best_pizza,worst_pizza,salesCountMax,salesCountMin, productPieces
+
 
 @login_required(login_url="user:login")
 def adminDashboard(request):
     # url:/user/admin/dashboard/
     if request.user.is_superuser:
         qy = OrderPizza.objects.all()
+        best_pizza, worst_pizza, salesCountMax, salesCountMin, productPieces = statistic()
         daily_earnings = 0
         monthly_income = 0
         annual_earnings = 0
@@ -234,7 +262,13 @@ def adminDashboard(request):
         context = {
             "yearly": annual_earnings,
             "monthly": monthly_income,
-            "daily": daily_earnings
+            "daily": daily_earnings,
+            "best_pizza":best_pizza,
+            "worst_pizza":worst_pizza,
+            "salesCountMax":salesCountMax,
+            "salesCountMin":salesCountMin,
+            "lengthOrders":len(qy),
+            "sumProductPieces":productPieces
         }
         return render(request, "user_operation/admin/admin.html", context)
     else:
@@ -330,26 +364,44 @@ def usernameChange(request):
 @login_required(login_url="user:login")
 def emailChange(request):
     # url:/user/change/email/
-    form = changeEmailForm(request.POST or None)
-    context = {
-        "form": form
-    }
-    if form.is_valid():
-        email = form.cleaned_data.get("email")
-        password = form.cleaned_data.get("password")
-        user = authenticate(username = str(request.user), password=password)
-        if user is None:
-            messages.info(request, "Parola Hatalı.")
-            return render(request, "user_operation/normal_user/changeEmail.html", context) 
-        user.email = email
-        try:
-            user.save()
-        except:
-            messages.info(request,"Email zaten kullanımda")
-            return redirect("/user/change/username")
-        messages.success(request,"Emailiniz Değiştirildi.")
-        return redirect("/user/myaccount/")
-    return render(request, "user_operation/normal_user/changeEmail.html", context)
+    user = request.user
+    email = request.user.email
+    current_site = get_current_site(request)
+    mail_subject = 'Change Email.'
+    message = render_to_string('changeEmail_template.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+    })
+    send_mail(mail_subject, message, 'pizzaspizza.company@gmail.com', [email])
+    messages.success(request,'Mailinize link gönderildi. Linke tıklayarak emailinizi değiştirebilirsiniz.')
+    return redirect("/user/myaccount")
+
+@login_required(login_url="user:login")
+def emailChangeToken(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        form = changeEmailForm(request.POST or None)
+        context = {"form":form,"title":"Email Değiştir"}
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            controlUser = authenticate(username = str(request.user), password=password)
+            if controlUser == user:
+                user.email = email
+                user.save()
+                messages.success(request,"Emailiniz Başarıyla Değiştirildi")
+                login(request,user)
+                return redirect("/user/myaccount")
+        return render(request,"user_operation/normal_user/changePasswd.html",context)
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 @login_required(login_url="user:login")
 def passwdChange(request):

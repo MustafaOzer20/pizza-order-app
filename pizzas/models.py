@@ -17,6 +17,16 @@ class Pizza(models.Model):
         choices=categoryNames,
         default= 'Cazip Pizzalar'
     )
+    salesCount = models.IntegerField()
+    forRating = models.CharField(max_length=500,null=True)
 
     def __str__(self):
         return self.title
+
+
+class ProductsRatings(models.Model):
+    comment = models.CharField(max_length=200)
+    ratings = models.IntegerField()
+    userId = models.IntegerField()
+    productId = models.IntegerField()
+    categoryId = models.IntegerField()

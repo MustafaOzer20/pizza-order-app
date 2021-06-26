@@ -63,6 +63,11 @@ def payment(request, methodId):
         phone_number = form.cleaned_data.get("phone_number")
         user_note = form.cleaned_data.get("user_note")
         payment_method = methodId
+        for i in range(len(productId)):
+            if categoryId[i] == 1:
+                pizza = Pizza.objects.get(id=productId[i])
+                pizza.salesCount += pieces[i]
+                pizza.save()
         productId = str(productId)   
         categoryId = str(categoryId)    
         newOrder = OrderPizza(

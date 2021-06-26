@@ -1,5 +1,8 @@
+from django.contrib.auth.models import User
+from user.forms import OrderRatings
 from pizzas.forms import PizzaForm
-from pizzas.models import Pizza
+from pizzas.models import Pizza, ProductsRatings
+from basket.models import BasketItem, OrderPizza
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -20,6 +23,18 @@ def pizzas(request):
         pizzas = Pizza.objects.all()
     else:
         pizzas = Pizza.objects.filter(title__contains=keyword)
+    
+    for i in pizzas:
+        try:
+            sumRate = 0
+            count = 0
+            rate = ProductsRatings.objects.filter(productId=i.id)
+            for j in rate:
+                sumRate += j.ratings
+                count += 1
+            i.forRating = sumRate/count
+        except:
+            pass
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
 
 def cazip(request):
@@ -91,7 +106,7 @@ def productsEdit(request, id):
         pizza = form.save(commit=False)
         pizza.save()
         messages.success(request, "Ürün Başarıyla Güncellendi!")
-        return redirect("/user/admin/products/")
+        return redirect("/pizzas/admin/products/")
     title = "Pizza Düzenle"
     context = {
         "title":title,
@@ -115,7 +130,7 @@ def productsAdd(request):
         pizza = form.save(commit=False)
         pizza.save()
         messages.success(request,"Ürün Eklendi")
-        return redirect("/user/admin/products/")
+        return redirect("/pizzas/admin/products/")
     return render(request, "user_operation/admin/addProduct.html", context)
 
 @login_required(login_url="user:login")
@@ -125,7 +140,76 @@ def productsDelete(request, id):
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
     pizza = get_object_or_404(Pizza,id=id)
+    comments = ProductsRatings.objects.filter(productId=id,categoryId=1)
+    orders = OrderPizza.objects.all()
+    try:
+        item = BasketItem.objects.get(productId=id,categoryId=1)
+        item.delete()
+    except:
+        pass
+    for i in orders:
+        idList = list(eval(i.productIds))
+        categoryList = list(eval(i.categoryIds))
+        for j in range(len(idList)):
+            if idList[j] == id and categoryList[j]==1:
+                i.delete()
+    for i in comments:
+        i.delete()
     pizza.delete()
     messages.success(request,"Ürün Silindi!.")
-    return redirect("/user/admin/products/")
+    return redirect("/pizzas/admin/products/")
 
+
+@login_required(login_url="user:login")
+def ratingPizza(request,id):
+    orders = OrderPizza.objects.filter(userId=request.user.id)
+    result = False
+    for i in orders:
+        idList = list(eval(i.productIds))
+        categoryList = list(eval(i.categoryIds))
+        for j in range(len(idList)):
+            if idList[j] == id and categoryList[j] == 1:
+                result = True
+    if not result:
+        messages.info(request,"Bu ürünü değerlendirebilmek için en az 1 kere bu üründen satın almalısınız!")
+        return redirect(f"/basket/addtobasket/pizza/{id}")
+    form = OrderRatings(request.POST or None)
+    pizza = get_object_or_404(Pizza,id=id)
+    context = {
+        "form":form,
+        "product":pizza
+    }
+    if form.is_valid():
+        comment = form.cleaned_data.get("comments")
+        rating = form.cleaned_data.get("rating")
+        try:
+            history = ProductsRatings.objects.get(userId=request.user.id, productId = id, categoryId=1)
+            history.comment = comment
+            history.rating = rating
+        except:
+            ratingsModel = ProductsRatings(comment=comment,ratings=rating,categoryId=1,productId=id,userId=request.user.id)
+            ratingsModel.save()
+            messages.success(request,"Değerlendirmeniz Gönderildi")
+            return redirect("/pizzas/user/ratings")
+    return render(request,"pages/ratings.html",context)
+
+@login_required(login_url="user:login")
+def myRatings(request):
+    ratings = ProductsRatings.objects.filter(userId=request.user.id)
+    for i in ratings:
+        if i.categoryId == 1:
+            i.productId = Pizza.objects.get(id=i.productId)
+    context = {"ratings":ratings}
+    return render(request,"user_operation/normal_user/myratings.html",context)
+
+def pizzasRatings(request,id):
+    pizza = Pizza.objects.get(id=id)
+    comments = ProductsRatings.objects.filter(productId=id)
+    for i in comments:
+        i.userId = User.objects.get(id=i.userId)
+    context = {
+        "product":pizza,
+        "comments":comments,
+        "lengthComment":len(comments)
+    }
+    return render(request,"pages/productRatings.html",context)

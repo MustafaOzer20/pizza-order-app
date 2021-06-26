@@ -28,5 +28,6 @@ urlpatterns = [
     #change
     path('change/username/', views.usernameChange, name="usernameChange"),
     path('change/email/', views.emailChange, name="emailChange"),
+    path('change/email/<str:uidb64>/<str:token>',views.emailChangeToken, name="emailChangeToken"),
     path('change/password/', views.passwdChange, name="passwdChange"),
 ]

@@ -1,0 +1,83 @@
+{% extends 'pages/layout.html' %}
+{% load static %}
+
+{% block baslik %}
+<title>PizzaS | Sepete Ekle</title>
+<link rel="stylesheet" href="{% static 'css/page_specific/addtoBasket.css' %}">
+<style>
+    .checked {
+        color: orange;
+    }
+    .comments{
+        border-radius: 6px;
+        background: #fff;
+        padding: 20px;
+    }
+    .comments{
+        margin-top: 15px;
+    }
+    .title{
+        margin:20px 0 20px 0;
+    }
+</style>
+{% endblock baslik %}
+
+
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="col-md-6 offset-md-3">
+    <h2 class="title">{{product.title}}</h2>
+
+    <div class="single-card">
+        <img src="{{product.imageUrl}}" alt="">
+        <p>{{product.contents}}</p>
+        <span>{{product.price}} TL</span>
+    </div>
+</div>
+<div class="col-md-6 offset-md-3">
+    <div class="title"><h4>Değerlendirmeler({{lengthComment}})</h4></div>
+
+    <div class="comments">
+        {% if comments %}
+        {% for comment in comments %}
+        <div class="comment">
+            <h6>{{comment.userId.username}}</h6>
+            <p>&nbsp;{{comment.comment}}</p>
+            <div class="rate">
+                <span class="fa fa-star checked"></span>
+                {% if comment.ratings != 1 %}
+                <span class="fa fa-star checked"></span>
+                {% if comment.ratings != 2 %}
+                <span class="fa fa-star checked"></span>
+                {% if comment.ratings != 3 %}
+                <span class="fa fa-star checked"></span>
+                {% if comment.ratings != 4 %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+            </div>
+        </div><hr>
+        {% endfor %}
+        {% else %}
+        Henüz bu ürün değerlendirilmemiş
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}

@@ -98,3 +98,14 @@ class changeUsernameForm(forms.Form):
         }
         return values
 
+
+RATINGS_CHOICES =(
+    ("1", "1"),
+    ("2", "2"),
+    ("3", "3"),
+    ("4", "4"),
+    ("5", "5"),
+)
+class OrderRatings(forms.Form):
+    comments = forms.CharField(label="Yorum", min_length=5,max_length=260)
+    rating = forms.ChoiceField(label="Değerlendir",choices=RATINGS_CHOICES)

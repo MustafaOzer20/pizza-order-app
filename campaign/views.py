@@ -1,3 +1,4 @@
+from basket.models import BasketItem, OrderPizza
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -117,6 +118,18 @@ def campaignDelete(request, id):
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
     campaignModel = get_object_or_404(Campaign,id = id)
+    orders = OrderPizza.objects.all()
+    for i in orders:
+        idList = list(eval(i.productIds))
+        categoryList = list(eval(i.categoryIds))
+        for j in range(len(idList)):
+            if idList[j] == id and categoryList[j] == 2:
+                i.delete()
+    try:
+        item = BasketItem.objects.get(productId=id)
+        item.delete()
+    except:
+        pass
     campaignModel.delete()
     messages.success(request,"Kampanya Silindi!.")
     return redirect("/campaign/admin/campaign/")

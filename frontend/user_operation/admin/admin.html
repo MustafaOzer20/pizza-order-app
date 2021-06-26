@@ -6,6 +6,23 @@
     <title>PizzaS | Kontrol Paneli</title>
     <link rel="stylesheet" href="{% static 'css/page_specific/admin.css' %}">
     <link rel="stylesheet" href="{% static 'css/category_nav.css' %}">
+    <style>
+        .detail{
+            font-size: 12px;
+            margin: 5px;
+            padding: 5px;
+            background: orange;
+            border-radius: 20px;
+            color: #fff;
+        }
+        .detail:hover{
+            color: #fff;
+            text-decoration: none;
+        }
+        div h3{
+            margin-bottom: 30px;
+        }
+    </style>
 {% endblock baslik %}
     
 
@@ -33,10 +50,19 @@
         <div class="log-container">
             <div class="col-md-6 offset-md-3">
             <img src="{% static 'media/pizza.png' %}" alt=""></div>
+            <div><h3 class="display-6">İstatistikler</h3></div><hr>
             <div class="col">
-                <span style="font-size:13px;">Yıllık Kazanç : {{yearly}} TL</span> <br>
-               <span style="font-size:13px;">Aylık Kazanç : {{monthly}} TL</span> <br>
-               <span style="font-size:13px;">Günlük Kazanç : {{daily}} TL</span> <br>
+                <span style="font-size:13px;"><b>Yıllık Kazanç :</b> {{yearly}} TL</span> <hr>
+               <span style="font-size:13px;"><b>Aylık Kazanç :</b> {{monthly}} TL</span> <hr>
+               <span style="font-size:13px;"><b>Günlük Kazanç :</b> {{daily}} TL</span> <hr>
+               <span style="font-size:13px;"><b>Toplam Alınan Sipariş Sayısı :</b> {{lengthOrders}}</span> <hr>
+               <span style="font-size:13px;"><b>Toplam Satılan Ürün Sayısı :</b> {{sumProductPieces}}</span> <hr>
+               <span style="font-size:13px;"><b>En Çok Satılan Pizza :</b> {{best_pizza.title}}<br>{{salesCountMax}} tane satıldı.</span>
+               <a class="detail" href="{% url 'pizzas:productRatings' best_pizza.id %}"><i class="fas fa-smile"></i> Ürünü İncele</a>
+               <hr>
+               <span style="font-size:13px;"><b>En Az Satılan Pizza :</b> {{worst_pizza.title}}<br>{{salesCountMin}} tane satıldı.</span>
+               <a class="detail" href="{% url 'pizzas:productRatings' worst_pizza.id %}"><i class="fas fa-frown-open"></i> Ürünü İncele</a>
+               <hr>
             </div>           
         </div>
     </div>
