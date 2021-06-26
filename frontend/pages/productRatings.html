@@ -76,7 +76,8 @@
         </div><hr>
         {% endfor %}
         {% else %}
-        Henüz bu ürün değerlendirilmemiş
+        Henüz bu ürün değerlendirilmemiş.
+        <a href="{% url 'pizzas:ratings' product.id %}">İlk değerlendiren sen ol!</a>
         {% endif %}
     </div>
 </div>
