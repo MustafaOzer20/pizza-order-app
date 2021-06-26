@@ -23,18 +23,6 @@ def pizzas(request):
         pizzas = Pizza.objects.all()
     else:
         pizzas = Pizza.objects.filter(title__contains=keyword)
-    
-    for i in pizzas:
-        try:
-            sumRate = 0
-            count = 0
-            rate = ProductsRatings.objects.filter(productId=i.id)
-            for j in rate:
-                sumRate += j.ratings
-                count += 1
-            i.forRating = sumRate/count
-        except:
-            pass
     return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
 
 def cazip(request):
@@ -186,11 +174,20 @@ def ratingPizza(request,id):
             history = ProductsRatings.objects.get(userId=request.user.id, productId = id, categoryId=1)
             history.comment = comment
             history.rating = rating
+            history.save()
         except:
             ratingsModel = ProductsRatings(comment=comment,ratings=rating,categoryId=1,productId=id,userId=request.user.id)
             ratingsModel.save()
-            messages.success(request,"Değerlendirmeniz Gönderildi")
-            return redirect("/pizzas/user/ratings")
+        ratings = ProductsRatings.objects.filter(productId = id)
+        count = 0
+        sumRating = 0
+        for i in ratings:
+            sumRating+=i.ratings
+            count+=1
+        pizza.forRating = str(sumRating/count)
+        pizza.save()
+        messages.success(request,"Değerlendirmeniz Gönderildi")
+        return redirect("/pizzas/user/ratings")
     return render(request,"pages/ratings.html",context)
 
 @login_required(login_url="user:login")

@@ -17,8 +17,8 @@ class Pizza(models.Model):
         choices=categoryNames,
         default= 'Cazip Pizzalar'
     )
-    salesCount = models.IntegerField()
-    forRating = models.CharField(max_length=500,null=True)
+    salesCount = models.IntegerField(default=0)
+    forRating = models.CharField(max_length=500,null=True,default="0.0")
 
     def __str__(self):
         return self.title

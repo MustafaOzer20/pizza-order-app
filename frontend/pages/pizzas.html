@@ -76,14 +76,15 @@
           </div>
           {% if pizza.forRating %}
           <div class="rate">
+                {% if pizza.forRating > '0.0' %}
                 <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > 1.0 %}
+                {% if pizza.forRating > '1.0' %}
                 <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > 2.0 %}
+                {% if pizza.forRating > '2.0' %}
                 <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > 3.0 %}
+                {% if pizza.forRating > '3.0' %}
                 <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > 4.0 %}
+                {% if pizza.forRating > '4.0' %}
                 <span class="fa fa-star checked"></span>
                 {% else %}
                 <span class="fa fa-star"></span>
@@ -98,6 +99,13 @@
                 <span class="fa fa-star"></span>
                 {% endif %}
                 {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>
                 <span class="fa fa-star"></span>

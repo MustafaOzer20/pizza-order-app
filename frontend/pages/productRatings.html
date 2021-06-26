@@ -36,7 +36,7 @@
     </div>
 </div>
 <div class="col-md-6 offset-md-3">
-    <div class="title"><h4>Değerlendirmeler({{lengthComment}})</h4></div>
+    <div class="title"><h4>Değerlendirmeler({{lengthComment}})</h4>{% if comments %} <a href="{% url 'pizzas:ratings' product.id %}">Sende Değerlendir!</a>{% endif %}</div>
 
     <div class="comments">
         {% if comments %}

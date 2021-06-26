@@ -22,6 +22,14 @@
         div h3{
             margin-bottom: 30px;
         }
+        .checked {
+        color: orange;
+    }
+    .rate{
+        font-size:13px;
+        margin-top:10px;
+        margin-bottom:10px;
+      }
     </style>
 {% endblock baslik %}
     
@@ -57,11 +65,169 @@
                <span style="font-size:13px;"><b>Günlük Kazanç :</b> {{daily}} TL</span> <hr>
                <span style="font-size:13px;"><b>Toplam Alınan Sipariş Sayısı :</b> {{lengthOrders}}</span> <hr>
                <span style="font-size:13px;"><b>Toplam Satılan Ürün Sayısı :</b> {{sumProductPieces}}</span> <hr>
-               <span style="font-size:13px;"><b>En Çok Satılan Pizza :</b> {{best_pizza.title}}<br>{{salesCountMax}} tane satıldı.</span>
-               <a class="detail" href="{% url 'pizzas:productRatings' best_pizza.id %}"><i class="fas fa-smile"></i> Ürünü İncele</a>
+               <span style="font-size:13px;"><b>En Çok Satılan Pizza :</b> {{best_pizza.title}}<br>{{best_pizza.salesCount}} tane satıldı.</span><br>
+               <div class="rate">
+                {% if best_pizza.forRating > '0.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if best_pizza.forRating > '1.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if best_pizza.forRating > '2.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if best_pizza.forRating > '3.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if best_pizza.forRating > '4.0' %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                <span>({{best_pizza.forRating}})</span>
+            </div>
+            <a class="detail" href="{% url 'pizzas:productRatings' best_pizza.id %}"><i class="fas fa-smile"></i> Ürünü İncele</a>
                <hr>
-               <span style="font-size:13px;"><b>En Az Satılan Pizza :</b> {{worst_pizza.title}}<br>{{salesCountMin}} tane satıldı.</span>
-               <a class="detail" href="{% url 'pizzas:productRatings' worst_pizza.id %}"><i class="fas fa-frown-open"></i> Ürünü İncele</a>
+               <span style="font-size:13px;"><b>En Az Satılan Pizza :</b> {{worst_pizza.title}}<br>{{worst_pizza.salesCount}} tane satıldı.</span><br>
+               <div class="rate">
+                {% if worst_pizza.forRating > '0.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if worst_pizza.forRating > '1.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if worst_pizza.forRating > '2.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if worst_pizza.forRating > '3.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if worst_pizza.forRating > '4.0' %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                <span>({{worst_pizza.forRating}})</span>
+            </div>
+            <a class="detail" href="{% url 'pizzas:productRatings' worst_pizza.id %}"><i class="fas fa-frown-open"></i> Ürünü İncele</a>
+               <hr>
+               <span style="font-size:13px;"><b>Puanı En Yüksek Pizza :</b> {{popular_pizza.title}}<br>{{popular_pizza.salesCount}} tane satıldı.</span><br>
+               <div class="rate">
+                {% if popular_pizza.forRating > '0.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if popular_pizza.forRating > '1.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if popular_pizza.forRating > '2.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if popular_pizza.forRating > '3.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if popular_pizza.forRating > '4.0' %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                <span>({{popular_pizza.forRating}})</span>
+            </div>
+            <a class="detail" href="{% url 'pizzas:productRatings' popular_pizza.id %}"><i class="fas fa-smile"></i> Ürünü İncele</a>
+               <hr>
+               <span style="font-size:13px;"><b>Puanı En Düşük Pizza :</b> {{unpopular_pizza.title}}<br>{{unpopular_pizza.salesCount}} tane satıldı.</span><br>
+            <div class="rate">
+                {% if unpopular_pizza.forRating > '0.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if unpopular_pizza.forRating > '1.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if unpopular_pizza.forRating > '2.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if unpopular_pizza.forRating > '3.0' %}
+                <span class="fa fa-star checked"></span>
+                {% if unpopular_pizza.forRating > '4.0' %}
+                <span class="fa fa-star checked"></span>
+                {% else %}
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                {% else %}
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                {% endif %}
+                <span>({{unpopular_pizza.forRating}})</span>
+            </div>
+            <a class="detail" href="{% url 'pizzas:productRatings' unpopular_pizza.id %}"><i class="fas fa-frown-open"></i> Ürünü İncele</a>
                <hr>
             </div>           
         </div>

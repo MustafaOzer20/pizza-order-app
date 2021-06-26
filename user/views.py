@@ -1,7 +1,7 @@
 from basket.models import OrderPizza
 from extras.models import Extra
 from campaign.models import Campaign
-from pizzas.models import Pizza
+from pizzas.models import Pizza, ProductsRatings
 from basket.forms import AdminForm
 from django.shortcuts import render,redirect,HttpResponse
 from .forms import ChangeForgotPasswd, ForgetPasswdForm, LoginForm, OrderRatings, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
@@ -221,17 +221,22 @@ def statistic():
 
     best_selling = Pizza.objects.aggregate(Max('salesCount'))
     worst_selling = Pizza.objects.aggregate(Min('salesCount'))
+    popular = Pizza.objects.aggregate(Max('forRating'))
+    unpopular = Pizza.objects.aggregate(Min('forRating'))
+
+    popular_pizza = Pizza.objects.filter(forRating=popular['forRating__max'])
+    popular_pizza = popular_pizza[0]
+    unpopular_pizza = Pizza.objects.filter(forRating=unpopular['forRating__min'])
+    unpopular_pizza = unpopular_pizza[0]
 
     best_pizza = Pizza.objects.filter(salesCount=best_selling['salesCount__max'])
     best_pizza = best_pizza[0]
 
+
     worst_pizza = Pizza.objects.filter(salesCount=worst_selling['salesCount__min'])
     worst_pizza = worst_pizza[0]
 
-    salesCountMax = best_selling['salesCount__max']
-    salesCountMin = worst_selling['salesCount__min']
-
-    return best_pizza,worst_pizza,salesCountMax,salesCountMin, productPieces
+    return best_pizza,worst_pizza, popular_pizza, unpopular_pizza, productPieces
 
 
 @login_required(login_url="user:login")
@@ -239,7 +244,7 @@ def adminDashboard(request):
     # url:/user/admin/dashboard/
     if request.user.is_superuser:
         qy = OrderPizza.objects.all()
-        best_pizza, worst_pizza, salesCountMax, salesCountMin, productPieces = statistic()
+        best_pizza, worst_pizza, popular_pizza, unpopular_pizza, productPieces = statistic()
         daily_earnings = 0
         monthly_income = 0
         annual_earnings = 0
@@ -264,9 +269,9 @@ def adminDashboard(request):
             "monthly": monthly_income,
             "daily": daily_earnings,
             "best_pizza":best_pizza,
+            "popular_pizza":popular_pizza,
+            "unpopular_pizza":unpopular_pizza,
             "worst_pizza":worst_pizza,
-            "salesCountMax":salesCountMax,
-            "salesCountMin":salesCountMin,
             "lengthOrders":len(qy),
             "sumProductPieces":productPieces
         }
