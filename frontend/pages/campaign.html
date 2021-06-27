@@ -6,7 +6,20 @@
     <link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
     <link rel="stylesheet" href="{% static 'css/searchbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/category_nav.css' %}">
-
+    <style>
+      .nav-link{
+    color: orange;
+  }
+  div.title{
+    display: flex;
+    margin: 7px;
+    color: orange;
+  }
+  div.title button{
+    position: absolute;
+    left: 20px;
+  }
+    </style>
 {% endblock baslik %}
     
 
@@ -23,36 +36,24 @@
       </div>
     </div>
   </div></form>
-<ul class="nav nav-pills nav-fill">
-  <li class="nav-item">
-    {% if title == "Pizzalar" %}
-    <a class="nav-link active" href="{% url 'campaign:pizzas' %}">Pizzalar</a>
-    {% else %}
-    <a class="nav-link" href="{% url 'campaign:pizzas' %}">Pizzalar</a>
-    {% endif %}
-  </li>
-  <li class="nav-item">
-    {% if title == "Dürümler" %}
-    <a class="nav-link active" href="{% url 'campaign:wraps' %}">Dürümler</a>
-    {% else %}
-    <a class="nav-link" href="{% url 'campaign:wraps' %}">Dürümler</a>
-    {% endif %}
-  </li>
-  <li class="nav-item">
-    {% if title == "Makarnalar" %}
-    <a class="nav-link active" href="{% url 'campaign:macaroni' %}">Makarnalar</a>
-    {% else %}
-    <a class="nav-link" href="{% url 'campaign:macaroni' %}">Makarnalar</a>
-    {% endif %}
-  </li>
-  <li class="nav-item">
-    {% if title == "Özel Fırsatlar" %}
-    <a class="nav-link active" href="{% url 'campaign:special' %}">Özel Fırsatlar</a>
-    {% else %}
-    <a class="nav-link" href="{% url 'campaign:special' %}">Özel Fırsatlar</a>
-    {% endif %}
-  </li>
-</ul>
+<nav style="z-index:0;" class="navbar navbar-expand-sm navbar-light bg-faded">
+  <div class="title">
+    <button style="display:flex;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content"
+      aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <h2 class="title">Kategoriler</h2>
+    </div>
+  <!-- Links -->
+  <div class="collapse navbar-collapse justify-content-end" id="nav-content">
+    <ul class="navbar-nav">
+      {% for category in categorys %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'campaign:category' category.name %}">{{category.name}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+</nav>
     <div class="pizza-list">
     <div class="grid-container">
     {% for campaign in campaigns %}
@@ -69,5 +70,11 @@
         </div>
     {% endfor %}
     </div></div>
+<script src="{% static 'js/categoryNav/jquery-3.2.1.slim.min.js' %}" ></script>
 
+<script src="{% static 'js/categoryNav/popper.min.js' %}" ></script>
+
+<script src="{% static 'js/categoryNav/bootstrap.min.js' %}" ></script>
+
+<script src="{% static 'js/categoryNav/index.js' %}" ></script>
 {% endblock body %}

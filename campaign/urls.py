@@ -4,10 +4,7 @@ from campaign import views
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('pizzalar/', views.campaignPizzas, name="pizzas"),
-    path('wraps/', views.campaignWrap, name="wraps"),
-    path('makarnalar/', views.campaignMacaroni, name="macaroni"),
-    path('special/', views.campaignSpecial, name="special"),
+    path('<str:name>/', views.categoryCampaign, name="category"),
     
 
     # admin

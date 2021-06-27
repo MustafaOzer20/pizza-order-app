@@ -4,10 +4,7 @@ from pizzas import views
 urlpatterns = [
     #pizzas category
     path('', views.pizzas, name="pizzas"),
-    path('cazip/', views.cazip, name="cazip"),
-    path('special/', views.special, name="special"),
-    path('bolmalzemeli/', views.bolmalzeme, name="bolmalzemeli"),
-    path('gurme/', views.gurme, name="gurme"),
+    path('<str:name>/',views.pizzasCategory, name="category"),
 
     #admin
     path('admin/products/', views.products, name="products"),

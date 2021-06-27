@@ -2,21 +2,35 @@
 {% load static %}
 
 {% block baslik %}
-    <title>PizzaS | {{title}}</title>
-    <link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
-    <link rel="stylesheet" href="{% static 'css/searchbar.css' %}">
-    <link rel="stylesheet" href="{% static 'css/category_nav.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-      .ratings{
-        margin:15px;
-      }
-      .checked {
-        color: orange;
-    }
-    </style>
+<title>PizzaS | {{title}}</title>
+<link rel="stylesheet" href="{% static 'css/page_specific/pizzas.css' %}">
+<link rel="stylesheet" href="{% static 'css/searchbar.css' %}">
+<link rel="stylesheet" href="{% static 'css/category_nav.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+  .ratings {
+    margin: 15px;
+  }
+
+  .checked {
+    color: orange;
+  }
+  .nav-link{
+    color: orange;
+  }
+  div.title{
+    display: flex;
+    margin: 7px;
+    color: orange;
+  }
+  div.title button{
+    position: absolute;
+    left: 20px;
+  }
+
+</style>
 {% endblock baslik %}
-    
+
 
 
 {% block body %}
@@ -24,13 +38,108 @@
   <div class="container h-100">
     <div class="d-flex justify-content-center h-100">
       <div class="searchbar">
-        
-          <input class="search_input" type="text" name="keyword" placeholder="Ara...">
-          <button type="submit" class="search_icon"><i class="fas fa-search"></i></button>
-          
+
+        <input class="search_input" type="text" name="keyword" placeholder="Ara...">
+        <button type="submit" class="search_icon"><i class="fas fa-search"></i></button>
+
       </div>
     </div>
-  </div></form>
+  </div>
+</form>
+<nav style="z-index:0;" class="navbar navbar-expand-sm navbar-light bg-faded">
+  <div class="title">
+    <button style="display:flex;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content"
+      aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <h2 class="title">Kategoriler</h2>
+    </div>
+  <!-- Links -->
+  <div class="collapse navbar-collapse justify-content-end" id="nav-content">
+    <ul class="navbar-nav">
+      {% for category in categorys %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'pizzas:category' category.name %}">{{category.name}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+</nav>
+
+<div class="pizza-list">
+  <div class="grid-container">
+    {% for pizza in pizzas %}
+    <div class="grid-item">
+      <div class="pizza-card">
+        <img src={{pizza.imageUrl}}></img>
+        <div class="pizza">
+          <h2>{{pizza.title}}</h2>
+          <span class="contents">{{pizza.contents}}</span>
+          <span class="price">{{pizza.price}} TL</span>
+          <a href="{% url 'basket:addToBasketPizza' pizza.id %}">Sipariş Ver</a> <br>
+        </div>
+        {% if pizza.forRating %}
+        <div class="rate">
+          {% if pizza.forRating > '0.0' %}
+          <span class="fa fa-star checked"></span>
+          {% if pizza.forRating > '1.0' %}
+          <span class="fa fa-star checked"></span>
+          {% if pizza.forRating > '2.0' %}
+          <span class="fa fa-star checked"></span>
+          {% if pizza.forRating > '3.0' %}
+          <span class="fa fa-star checked"></span>
+          {% if pizza.forRating > '4.0' %}
+          <span class="fa fa-star checked"></span>
+          {% else %}
+          <span class="fa fa-star"></span>
+          {% endif %}
+          {% else %}
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          {% endif %}
+          {% else %}
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          {% endif %}
+          {% else %}
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          {% endif %}
+          {% else %}
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>
+          {% endif %}
+          <span>({{pizza.forRating}})</span>
+        </div>
+        {% else %}
+        {% endif %}
+
+        <a class="ratings" href="{% url 'pizzas:productRatings' pizza.id %}">Değerlendirmeler</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script src="{% static 'js/categoryNav/jquery-3.2.1.slim.min.js' %}" ></script>
+
+<script src="{% static 'js/categoryNav/popper.min.js' %}" ></script>
+
+<script src="{% static 'js/categoryNav/bootstrap.min.js' %}" ></script>
+
+<script src="{% static 'js/categoryNav/index.js' %}" ></script>
+
+
+{% endblock body %}
+
+
+
+<!--
 <ul class="nav nav-pills nav-fill">
   <li class="nav-item">
     {% if title == "Cazip Pizzalar" %}
@@ -62,64 +171,5 @@
   </li>
 </ul>
 
-    <div class="pizza-list">
-    <div class="grid-container">
-    {% for pizza in pizzas %}
-    <div class="grid-item">
-        <div class="pizza-card">
-          <img src={{pizza.imageUrl}}></img>
-          <div class="pizza"> 
-            <h2>{{pizza.title}}</h2>
-            <span class="contents">{{pizza.contents}}</span>
-            <span class="price">{{pizza.price}} TL</span>
-            <a href="{% url 'basket:addToBasketPizza' pizza.id %}">Sipariş Ver</a> <br>
-          </div>
-          {% if pizza.forRating %}
-          <div class="rate">
-                {% if pizza.forRating > '0.0' %}
-                <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > '1.0' %}
-                <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > '2.0' %}
-                <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > '3.0' %}
-                <span class="fa fa-star checked"></span>
-                {% if pizza.forRating > '4.0' %}
-                <span class="fa fa-star checked"></span>
-                {% else %}
-                <span class="fa fa-star"></span>
-                {% endif %}
-                {% else %}
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                {% endif %}
-                {% else %}
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                {% endif %}
-                {% else %}
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                {% endif %}
-                {% else %}
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                {% endif %}
-                <span>({{pizza.forRating}})</span>
-            </div>
-          {% else %}
-          {% endif %}
-          
-          <a class="ratings" href="{% url 'pizzas:productRatings' pizza.id %}">Değerlendirmeler</a>
-        </div>
-        </div>
-    {% endfor %}
-    </div></div>
 
-{% endblock body %}
+-->

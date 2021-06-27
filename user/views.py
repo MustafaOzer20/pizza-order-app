@@ -1,7 +1,7 @@
-from basket.models import OrderPizza
+from basket.models import  OrderPizza
 from extras.models import Extra
 from campaign.models import Campaign
-from pizzas.models import Pizza, ProductsRatings
+from pizzas.models import Pizza
 from basket.forms import AdminForm
 from django.shortcuts import render,redirect,HttpResponse
 from .forms import ChangeForgotPasswd, ForgetPasswdForm, LoginForm, OrderRatings, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
@@ -264,6 +264,10 @@ def adminDashboard(request):
                 annual_earnings += i.sum_price
             if str(dt_object)[8:10] == str(datetime.datetime.now().date())[-2:] and str(dt_object)[:4] == str(datetime.datetime.now().date())[:4]:
                 daily_earnings += i.sum_price
+        
+        annual_earnings = round(annual_earnings,2)
+        monthly_income = round(monthly_income,2)
+        daily_earnings = round(daily_earnings,2)
         context = {
             "yearly": annual_earnings,
             "monthly": monthly_income,
@@ -428,5 +432,3 @@ def passwdChange(request):
         return redirect("/user/myaccount/")
         
     return render(request, "user_operation/normal_user/changePasswd.html", context)
-
-

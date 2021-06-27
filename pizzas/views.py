@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from user.forms import OrderRatings
 from pizzas.forms import PizzaForm
-from pizzas.models import Pizza, ProductsRatings
+from pizzas.models import CategoryManagment, Pizza, ProductsRatings
 from basket.models import BasketItem, OrderPizza
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -23,47 +23,20 @@ def pizzas(request):
         pizzas = Pizza.objects.all()
     else:
         pizzas = Pizza.objects.filter(title__contains=keyword)
-    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
+    category = CategoryManagment.objects.filter(kind="Pizza")
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title, "categorys":category})
 
-def cazip(request):
-    # url:/pizzas/cazip/
-    title = "Cazip Pizzalar"
+def pizzasCategory(request,name):
+    # url:/pizzas/
+    title = name
     keyword = request.GET.get("keyword")
     if not keyword:
-        pizzas = Pizza.objects.filter(category=title)
+        pizzas = Pizza.objects.filter(category=name)
     else:
-        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
-    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title":title})
+        pizzas = Pizza.objects.filter(title__contains=keyword)
+    category = CategoryManagment.objects.filter(kind="Pizza")
+    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title, "categorys":category})
 
-def special(request):
-    # url:/pizzas/special/
-    title = "Özel Pizzalar"
-    keyword = request.GET.get("keyword")
-    if not keyword:
-        pizzas = Pizza.objects.filter(category=title)
-    else:
-        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
-    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title" : title})
-
-def bolmalzeme(request):
-    # url:/pizzas/bolmalzemeli/
-    title = "Bol Malzemeli Pizzalar"
-    keyword = request.GET.get("keyword")
-    if not keyword:
-        pizzas = Pizza.objects.filter(category=title)
-    else:
-        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
-    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title": title})
-
-def gurme(request):
-    # url:/pizzas/gurme/
-    title = "Gurme Pizzalar"
-    keyword = request.GET.get("keyword")
-    if not keyword:
-        pizzas = Pizza.objects.filter(category=title)
-    else:
-        pizzas = Pizza.objects.filter(category=title,title__contains=keyword)
-    return render(request, 'pages/pizzas.html', {"pizzas" : pizzas, "title":title})
 
 
 @login_required(login_url="user:login")

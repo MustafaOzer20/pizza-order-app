@@ -1,3 +1,4 @@
+from pizzas.models import CategoryManagment
 from basket.models import BasketItem, OrderPizza
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -14,47 +15,20 @@ def index(request):
         qy = Campaign.objects.filter(title__contains=keyword)
     else:
         qy = Campaign.objects.all()
-    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
+    category = CategoryManagment.objects.filter(kind="Kampanya")
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title, "categorys":category})
 
-def campaignWrap(request):
-    # url:/campaign/wrap
-    title = "Dürümler"
+def categoryCampaign(request,name):
+    # url:/campaign/name
+    title = name
     keyword = request.GET.get("keyword")
     if keyword:
-        qy = Campaign.objects.filter(title__contains=keyword, category=title)
+        qy = Campaign.objects.filter(title__contains=keyword)
     else:
-        qy = Campaign.objects.filter(category=title)
-    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
+        qy = Campaign.objects.filter(category=name)
+    category = CategoryManagment.objects.filter(kind="Kampanya")
+    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title, "categorys":category})
 
-def campaignPizzas(request):
-    # url:/campaign/pizzas
-    title = "Pizzalar"
-    keyword = request.GET.get("keyword")
-    if keyword:
-        qy = Campaign.objects.filter(title__contains=keyword, category=title)
-    else:
-        qy = Campaign.objects.filter(category=title)
-    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
-
-def campaignMacaroni(request):
-    # url:/campaign/makarnalar
-    title = "Makarnalar"
-    keyword = request.GET.get("keyword")
-    if keyword:
-        qy = Campaign.objects.filter(title__contains=keyword, category=title)
-    else:
-        qy = Campaign.objects.filter(category=title)
-    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
-
-def campaignSpecial(request):
-    # url:/campaign/special
-    title = "Özel Fırsatlar"
-    keyword = request.GET.get("keyword")
-    if keyword:
-        qy = Campaign.objects.filter(title__contains=keyword, category=title)
-    else:
-        qy = Campaign.objects.filter(category=title)
-    return render(request, 'pages/campaign.html', {"campaigns" : qy, "title": title})
 
 @login_required(login_url="user:login")
 def campaign(request):

@@ -1,3 +1,4 @@
+from pizzas.models import CategoryManagment
 from basket.models import BasketItem, OrderPizza
 from extras.models import Extra
 from extras.forms import ExtraForm
@@ -15,9 +16,31 @@ def index(request):
         qy = Extra.objects.filter(title__contains=keyword)
     else:
         qy = Extra.objects.all()
+        
+    category = CategoryManagment.objects.filter(kind="Ekstra")
+
     context = {
         "products":qy,
-        "title": title
+        "title": title,
+        "categorys":category
+    }
+    return render(request, "pages/extras.html",context)
+
+def categoryExtra(request,name):
+    # url:/extras/name
+    title = name
+    keyword = request.GET.get("keyword")
+    if keyword:
+        qy = Extra.objects.filter(title__contains=keyword)
+    else:
+        qy = Extra.objects.filter(category=name)
+
+    category = CategoryManagment.objects.filter(kind="Ekstra")
+
+    context = {
+        "products":qy,
+        "title": title,
+        "categorys":category
     }
     return render(request, "pages/extras.html",context)
 
