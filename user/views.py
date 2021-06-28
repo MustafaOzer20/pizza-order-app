@@ -1,9 +1,10 @@
-from basket.models import  OrderPizza
+from pizzas.forms import CategoryForm, CategoryFormWithoutKind
+from basket.models import  BasketItem, OrderPizza
 from extras.models import Extra
 from campaign.models import Campaign
-from pizzas.models import Pizza
+from pizzas.models import CategoryManagment, Pizza, ProductsRatings
 from basket.forms import AdminForm
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import get_object_or_404, render,redirect,HttpResponse
 from .forms import ChangeForgotPasswd, ForgetPasswdForm, LoginForm, OrderRatings, RegisterForm, changeEmailForm, changePasswdForm, changeUsernameForm
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -432,3 +433,135 @@ def passwdChange(request):
         return redirect("/user/myaccount/")
         
     return render(request, "user_operation/normal_user/changePasswd.html", context)
+
+
+@login_required(login_url="user:login")
+def listCategories(request):
+    if not request.user.is_superuser:
+        messages.info(request,"İzinsiz Giriş!")
+        return redirect("/")
+    keyword = request.GET.get("keyword")
+    if keyword:
+        categories = CategoryManagment.objects.filter(name__contains=keyword)
+    else:
+        categories = CategoryManagment.objects.all()
+    context = {
+        "categorys":categories
+    }
+    return render(request,"user_operation/admin/categories.html",context)
+
+def checkCategory(name,kind):
+    try:
+        control = CategoryManagment.objects.get(name=name)
+        if control.kind == kind:
+            return True
+        else:
+            raise Exception("Kategori Eklenebilir.")
+    except:
+        return False
+
+
+@login_required(login_url="user:login")
+def addCategory(request):
+    if not request.user.is_superuser:
+        messages.info(request,"İzinsiz Giriş!")
+        return redirect("/")
+    form = CategoryForm(request.POST or None)
+    if form.is_valid():
+        name = form.cleaned_data.get("name")
+        kind = form.cleaned_data.get("kind")
+        if checkCategory(name,kind):
+            messages.info(request,"Böyle bir kategori zaten var!")
+            return redirect("/user/admin/categories/add/")
+        else:
+            newCategory = CategoryManagment(name=name,kind=kind)
+            newCategory.save()
+            messages.success(request,"Kategori başarıyla eklendi.")
+            return redirect("/user/admin/categories/")
+    context = {
+        "form":form
+    }
+    return render(request,"user_operation/admin/addProduct.html",context)
+
+
+@login_required(login_url="user:login")
+def editCategory(request,id):
+    if not request.user.is_superuser:
+        messages.info(request,"İzinsiz Giriş!")
+        return redirect("/")
+
+    category = get_object_or_404(CategoryManagment,id=id)
+    form = CategoryFormWithoutKind(request.POST or None, instance=category)
+    if form.is_valid():
+        name = form.cleaned_data.get("name")
+        if checkCategory(name,category.kind):
+            messages.info(request,"Böyle bir kategori zaten var!")
+            return redirect(f"/user/admin/categories/edit/{id}")
+        else:
+            updatePizzas(id,name)
+            category.save()
+            messages.success(request,"Kategori başarıyla eklendi.")
+            return redirect("/user/admin/categories/")
+
+    context = {"form":form,"title":"Kategori Düzenle"}
+    return render(request,"user_operation/admin/editProducts.html",context)
+
+def updatePizzas(id,newName):
+    oldCategory = CategoryManagment.objects.get(id=id)
+    product = getProduct(oldCategory.name,oldCategory.kind)
+    for i in product:
+        i.category = newName
+        i.save()
+
+def getProduct(name,kind):
+    if kind == "Pizza":
+        product = Pizza.objects.filter(category=name)
+    elif kind == "Kampanya":
+        product = Campaign.objects.filter(category=name)
+    else:
+        product = Campaign.objects.filter(category=name)
+    return product
+
+
+@login_required(login_url="user:login")
+def deleteCategory(request,id):
+    if not request.user.is_superuser:
+        messages.info(request,"İzinsiz Giriş!")
+        return redirect("/")
+
+    category = get_object_or_404(CategoryManagment,id=id)
+    products = getProduct(category.name,category.kind)
+    product_orders = OrderPizza.objects.all()
+    ids = []
+    for i in products:
+        ids.append(i.id)
+        # v eğer sepette bu kategorideki bir pizza varsa sepetten bu ürün silinecek
+        try:
+            item = BasketItem.objects.get(productId=i.id)
+            item.delete()
+        except:
+            pass
+        
+        if category.kind == "Pizza":
+            # v pizzaların içindeki ratingler silinecek 
+            ratings = ProductsRatings.objects.filter(productId=i.id)
+            for x in ratings:
+                x.delete()
+
+        #   kategori içindeki pizzalar silinecek
+        i.delete()
+    
+    #   eğer daha önce bu kategorideki bir pizza sipariş edilmiş ise o sipariş silinecek
+    kind = {1:"Pizza",2:"Kampanya",3:"Ekstra"}
+
+    for i in product_orders:
+        productIds = list(eval(i.productIds))
+        categoryIds = list(eval(i.categoryIds))
+        for x in range(len(productIds)):
+            if (productIds[x] in ids) and kind[categoryIds[x]] == category.kind:
+                i.delete()
+
+    #   kategori silinecek
+    category.delete()
+
+    return redirect("/user/admin/categories/")

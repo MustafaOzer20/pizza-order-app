@@ -17,6 +17,10 @@ urlpatterns = [
     #admin
     path('admin/orders/', views.orders, name="orders"),
     path('admin/dashboard/', views.adminDashboard, name="dashboard"),
+    path('admin/categories/',views.listCategories,name="categories"),
+    path('admin/categories/add/',views.addCategory,name="categoryAdd"),
+    path('admin/categories/edit/<int:id>',views.editCategory,name="categoryEdit"),
+    path('admin/categories/delete/<int:id>',views.deleteCategory,name="categoryDelete"),
 
     #emailverify
     path('activate/<str:uidb64>/<str:token>',views.activate, name="activate"),

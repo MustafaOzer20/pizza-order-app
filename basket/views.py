@@ -100,7 +100,7 @@ def updateAddPiece(request, id):
         Kullanici admin ise updatePiece fonksiyonu cagrilir.
     """
     if request.user.is_superuser:
-        return updatePiece(id, "+")
+        return updatePiece(id, "+",request)
     messages.info(request,"İzinsiz Giriş!")
     return redirect("/")
 
@@ -112,7 +112,7 @@ def updateReducePiece(request, id):
         Kullanici admin ise updatePiece fonksiyonu cagrilir.
     """
     if request.user.is_superuser:
-        return updatePiece(id, "-")
+        return updatePiece(id, "-",request)
     messages.info(request,"İzinsiz Giriş!")
     return redirect("/")
 
@@ -286,7 +286,7 @@ def checkBasket(request, payment=False):
 
 
 
-def updatePiece(id,operation):
+def updatePiece(id,operation,request):
     # verilen idye gore sepetteki urunun adet guncellemesini yapar
     # operation '+' ise mevcut adete 1 ekler.
     # operation '-' ise mevcut adeti 1 eksiltir.
@@ -294,6 +294,9 @@ def updatePiece(id,operation):
     item = BasketItem.objects.get(id=id)
     if operation == "+":
         item.piece += 1
+        if item.piece >100:
+            item.piece = 100
+            messages.info(request,"Bir üründen en fazla 100 tane sipariş edilebilir!")
         item.save()
     else:
         item.piece -= 1
