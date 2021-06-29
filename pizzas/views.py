@@ -101,7 +101,6 @@ def productsDelete(request, id):
         messages.info(request,"İzinsiz Giriş!")
         return redirect("/")
     pizza = get_object_or_404(Pizza,id=id)
-    comments = ProductsRatings.objects.filter(productId=id,categoryId=1)
     orders = OrderPizza.objects.all()
     try:
         item = BasketItem.objects.get(productId=id,categoryId=1)
@@ -114,8 +113,6 @@ def productsDelete(request, id):
         for j in range(len(idList)):
             if idList[j] == id and categoryList[j]==1:
                 i.delete()
-    for i in comments:
-        i.delete()
     pizza.delete()
     messages.success(request,"Ürün Silindi!.")
     return redirect("/pizzas/admin/products/")
@@ -144,14 +141,14 @@ def ratingPizza(request,id):
         comment = form.cleaned_data.get("comments")
         rating = form.cleaned_data.get("rating")
         try:
-            history = ProductsRatings.objects.get(userId=request.user.id, productId = id, categoryId=1)
+            history = ProductsRatings.objects.get(user=request.user, product = pizza, categoryId=1)
             history.comment = comment
             history.rating = rating
             history.save()
         except:
-            ratingsModel = ProductsRatings(comment=comment,ratings=rating,categoryId=1,productId=id,userId=request.user.id)
+            ratingsModel = ProductsRatings(comment=comment,ratings=rating,categoryId=1,product=pizza,user=request.user)
             ratingsModel.save()
-        ratings = ProductsRatings.objects.filter(productId = id)
+        ratings = ProductsRatings.objects.filter(product = pizza)
         count = 0
         sumRating = 0
         for i in ratings:
@@ -165,18 +162,13 @@ def ratingPizza(request,id):
 
 @login_required(login_url="user:login")
 def myRatings(request):
-    ratings = ProductsRatings.objects.filter(userId=request.user.id)
-    for i in ratings:
-        if i.categoryId == 1:
-            i.productId = Pizza.objects.get(id=i.productId)
+    ratings = ProductsRatings.objects.filter(user=request.user)
     context = {"ratings":ratings}
     return render(request,"user_operation/normal_user/myratings.html",context)
 
 def pizzasRatings(request,id):
     pizza = Pizza.objects.get(id=id)
-    comments = ProductsRatings.objects.filter(productId=id)
-    for i in comments:
-        i.userId = User.objects.get(id=i.userId)
+    comments = ProductsRatings.objects.filter(product=pizza)
     context = {
         "product":pizza,
         "comments":comments,

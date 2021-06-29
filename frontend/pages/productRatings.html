@@ -42,7 +42,7 @@
         {% if comments %}
         {% for comment in comments %}
         <div class="comment">
-            <h6>{{comment.userId.username}}</h6>
+            <h6>{{comment.user.username}}</h6>
             <p>&nbsp;{{comment.comment}}</p>
             <div class="rate">
                 <span class="fa fa-star checked"></span>

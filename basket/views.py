@@ -1,8 +1,6 @@
 from pizzas.models import Pizza
 from campaign.models import Campaign
 from extras.models import Extra
-from campaign.views import campaign
-from sqlite3.dbapi2 import connect
 from basket.models import BasketItem, OrderPizza
 from basket.forms import BasketForm, CampaignBasketForm, OrderForm, OrderWithPaymentForm, PayMethodForm
 from django.shortcuts import get_object_or_404, redirect, render
@@ -71,7 +69,7 @@ def payment(request, methodId):
         productId = str(productId)   
         categoryId = str(categoryId)    
         newOrder = OrderPizza(
-            basketId= basketId,userId = request.user.id,
+            basketId= basketId,user = request.user,
             productIds=productId, size=str(size),
             piece = str(pieces), sum_price = sumPrice,
             adress = adress, phone_number = phone_number,
@@ -81,7 +79,7 @@ def payment(request, methodId):
             categoryIds = categoryId
             )
         newOrder.save()
-        qy = BasketItem.objects.filter(userId=request.user.id)
+        qy = BasketItem.objects.filter(user=request.user)
         for i in qy:
             i.delete()     
         messages.success(request,"Sipariş Verildi! Siparişiniz 30-40 dakika içerisinde size ulaşacaktır.")
@@ -141,7 +139,7 @@ def addToBasketCampaign(request, id):
     if form.is_valid():
         piece = form.cleaned_data.get("piece")
         if not checkBasketItem(request.user.id, id, piece,categoryId=2): # urunun aynisi sepette yoksa
-            newBasketItem = BasketItem(userId = request.user.id,productId=id,piece=piece,size="-",categoryId=2)
+            newBasketItem = BasketItem(user = request.user,productId=id,piece=piece,size="-",categoryId=2)
             newBasketItem.save()
         messages.success(request,"Ürün Sepete Eklendi!")
         return redirect('/basket/basketItems/')
@@ -171,8 +169,8 @@ def addToBasketPizza(request, id):
     if form.is_valid():
         piece = form.cleaned_data.get("piece")
         size = form.cleaned_data.get("size")
-        if not checkBasketItem(request.user.id, id, piece, size): # urunun aynisi sepette yoksa
-            newBasketItem = BasketItem(userId = request.user.id,productId=id,piece=piece,size=size, categoryId=1)
+        if not checkBasketItem(request.user, id, piece, size): # urunun aynisi sepette yoksa
+            newBasketItem = BasketItem(user = request.user,productId=id,piece=piece,size=size, categoryId=1)
             newBasketItem.save()
         messages.success(request,"Ürün Sepete Eklendi!")
         return redirect('/basket/basketItems/')
@@ -202,9 +200,9 @@ def addToBasketExtras(request, id):
     }
     if form.is_valid():
         piece = form.cleaned_data.get("piece")
-        boolean = checkBasketItem(request.user.id, id, piece, categoryId=3)
+        boolean = checkBasketItem(request.user, id, piece, categoryId=3)
         if not boolean: # urunun aynisi sepette yoksa
-            newBasketItem = BasketItem(userId = request.user.id,productId=id,piece=piece,size="-", categoryId=3)
+            newBasketItem = BasketItem(user = request.user,productId=id,piece=piece,size="-", categoryId=3)
             newBasketItem.save()
         messages.success(request,"Extra Sepete Eklendi!")
         return redirect('/basket/basketItems/')
@@ -214,12 +212,12 @@ def addToBasketExtras(request, id):
 
 #functions
 
-def checkBasketItem(userId, productId, piece, size=None, categoryId=None):
+def checkBasketItem(user, productId, piece, size=None, categoryId=None):
     # urunun aynisi sepette varsa ve boylari ayniysa once adet guncellemesi yapar sonra true doner yoksa false doner
     if categoryId == None:
-        qy = BasketItem.objects.filter(userId=userId,productId=productId)
+        qy = BasketItem.objects.filter(user=user,productId=productId)
     else:
-        qy = BasketItem.objects.filter(userId=userId,productId=productId, categoryId=categoryId)
+        qy = BasketItem.objects.filter(user=user,productId=productId, categoryId=categoryId)
     for item in qy:
         if size == item.size:
             item.piece += piece
@@ -234,7 +232,7 @@ def checkBasketItem(userId, productId, piece, size=None, categoryId=None):
 def checkBasket(request, payment=False):
     # basketteki urunleri, urun sayisini ve toplam fiyati sozluk yapisinda doner
     # eger basket bossa None doner
-    query = BasketItem.objects.filter(userId=request.user.id)
+    query = BasketItem.objects.filter(user=request.user)
     productId = []
     basketLs = []
     pieces = []

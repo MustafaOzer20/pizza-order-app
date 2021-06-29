@@ -38,8 +38,8 @@ class Pizza(models.Model):
 class ProductsRatings(models.Model):
     comment = models.CharField(max_length=200)
     ratings = models.IntegerField()
-    userId = models.IntegerField()
-    productId = models.IntegerField()
     categoryId = models.IntegerField()
+    user = models.ForeignKey("auth.User",on_delete=models.CASCADE,null=True)
+    product = models.ForeignKey(Pizza,on_delete=models.CASCADE,null=True)
 
 
