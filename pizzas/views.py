@@ -120,7 +120,7 @@ def productsDelete(request, id):
 
 @login_required(login_url="user:login")
 def ratingPizza(request,id):
-    orders = OrderPizza.objects.filter(userId=request.user.id)
+    orders = OrderPizza.objects.filter(user=request.user)
     result = False
     for i in orders:
         idList = list(eval(i.productIds))

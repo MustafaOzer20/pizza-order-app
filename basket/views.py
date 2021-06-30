@@ -93,27 +93,12 @@ def payment(request, methodId):
 @login_required(login_url="user:login")
 def updateAddPiece(request, id):
     # url:/basket/basketItems/updatePiece/add/<int:id>
-    """ 
-        Kullanici admin degilse ana sayfaya yonlendirir.
-        Kullanici admin ise updatePiece fonksiyonu cagrilir.
-    """
-    if request.user.is_superuser:
-        return updatePiece(id, "+",request)
-    messages.info(request,"İzinsiz Giriş!")
-    return redirect("/")
+    return updatePiece(id, "+",request)
 
 @login_required(login_url="user:login")
 def updateReducePiece(request, id):
     # url:/basket/basketItems/updatePiece/reduce/<int:id>
-    """ 
-        Kullanici admin degilse ana sayfaya yonlendirir.
-        Kullanici admin ise updatePiece fonksiyonu cagrilir.
-    """
-    if request.user.is_superuser:
-        return updatePiece(id, "-",request)
-    messages.info(request,"İzinsiz Giriş!")
-    return redirect("/")
-
+    return updatePiece(id, "-",request)
 
 @login_required(login_url='user:login')
 def addToBasketCampaign(request, id):
@@ -138,10 +123,18 @@ def addToBasketCampaign(request, id):
     }
     if form.is_valid():
         piece = form.cleaned_data.get("piece")
-        if not checkBasketItem(request.user.id, id, piece,categoryId=2): # urunun aynisi sepette yoksa
+        boolean, secondBool = checkBasketItem(request.user.id, id, piece,categoryId=2)
+        if not boolean: # urunun aynisi sepette yoksa
+            checkLimit = BasketItem.objects.filter(user=request.user)
+            if len(checkLimit) >10:
+                messages.info(request,"Sepete en fazla 10 ürün eklenebilir.")
+                return redirect(f"/basket/addtobasket/campaign/{id}")
             newBasketItem = BasketItem(user = request.user,productId=id,piece=piece,size="-",categoryId=2)
             newBasketItem.save()
-        messages.success(request,"Ürün Sepete Eklendi!")
+            messages.success(request,"Ürün Sepete Eklendi!")
+        else:
+            if secondBool:
+                messages.info(request,"Bir Üründen Sepete En Fazla 20 Adet Eklenebilir!")
         return redirect('/basket/basketItems/')
     return render(request, "pages/addtobasket.html", context)
 
@@ -169,10 +162,18 @@ def addToBasketPizza(request, id):
     if form.is_valid():
         piece = form.cleaned_data.get("piece")
         size = form.cleaned_data.get("size")
-        if not checkBasketItem(request.user, id, piece, size): # urunun aynisi sepette yoksa
+        boolean,secondBool = checkBasketItem(request.user, id, piece, size)
+        if not boolean: # urunun aynisi sepette yoksa
+            checkLimit = BasketItem.objects.filter(user=request.user)
+            if len(checkLimit) >10:
+                messages.info(request,"Sepete en fazla 10 ürün eklenebilir.")
+                return redirect(f"/basket/addtobasket/pizza/{id}")
             newBasketItem = BasketItem(user = request.user,productId=id,piece=piece,size=size, categoryId=1)
             newBasketItem.save()
-        messages.success(request,"Ürün Sepete Eklendi!")
+            messages.success(request,"Ürün Sepete Eklendi!")
+        else:
+            if secondBool:
+                messages.info(request,"Bir Üründen Sepete En Fazla 20 Adet Eklenebilir!")
         return redirect('/basket/basketItems/')
     return render(request, "pages/addtobasket.html", context)
 
@@ -200,11 +201,19 @@ def addToBasketExtras(request, id):
     }
     if form.is_valid():
         piece = form.cleaned_data.get("piece")
-        boolean = checkBasketItem(request.user, id, piece, categoryId=3)
+        boolean, secondBool = checkBasketItem(request.user, id, piece, categoryId=3)
         if not boolean: # urunun aynisi sepette yoksa
+            checkLimit = BasketItem.objects.filter(user=request.user)
+            if len(checkLimit) >10:
+                messages.info(request,"Sepete en fazla 10 ürün eklenebilir.")
+                return redirect(f"/basket/addtobasket/extras/{id}")
             newBasketItem = BasketItem(user = request.user,productId=id,piece=piece,size="-", categoryId=3)
             newBasketItem.save()
-        messages.success(request,"Extra Sepete Eklendi!")
+            messages.success(request,"Extra Sepete Eklendi!")
+        else:
+            if secondBool:
+                messages.info(request,"Bir Üründen Sepete En Fazla 20 Adet Eklenebilir!")
+        
         return redirect('/basket/basketItems/')
     return render(request, "pages/addtobasket.html", context)
 
@@ -221,13 +230,21 @@ def checkBasketItem(user, productId, piece, size=None, categoryId=None):
     for item in qy:
         if size == item.size:
             item.piece += piece
+            if item.piece > 20:
+                item.piece=20
+                item.save()
+                return [True,True]
             item.save()
-            return True
+            return [True,False]
         if size==None:
             item.piece += piece
+            if item.piece > 20:
+                item.piece=20
+                item.save()
+                return [True,True]
             item.save()
-            return True
-    return False
+            return [True,False]
+    return [False,False]
 
 def checkBasket(request, payment=False):
     # basketteki urunleri, urun sayisini ve toplam fiyati sozluk yapisinda doner
@@ -292,9 +309,9 @@ def updatePiece(id,operation,request):
     item = BasketItem.objects.get(id=id)
     if operation == "+":
         item.piece += 1
-        if item.piece >100:
-            item.piece = 100
-            messages.info(request,"Bir üründen en fazla 100 tane sipariş edilebilir!")
+        if item.piece >20:
+            item.piece = 20
+            messages.info(request,"Bir üründen en fazla 20 tane sipariş edilebilir!")
         item.save()
     else:
         item.piece -= 1

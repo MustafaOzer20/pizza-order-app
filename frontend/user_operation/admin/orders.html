@@ -73,13 +73,8 @@
             <span>Adres:</span> {{ord.adress}}<br>
             <span>Tel No:</span> {{ord.phone_number}}<br> 
             <span>Müşteri Notu:</span> {{ord.user_note}}<br> 
-            {% if ord.payment_method == '1' %}
-                <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Nakit)<br> 
-            {% elif ord.payment_method == '2' %}
-                <span>Ödeme Yöntemi:</span> Kapıda Ödeme(Kart)<br> 
-            {% else %}
-                <span>Ödeme Yöntemi:</span> Online Ödeme<br>
-            {% endif %}
+            <span>Ödeme Yöntemi:</span> {{ord.payment_method}}<br> 
+
             
         </div>
     </div>

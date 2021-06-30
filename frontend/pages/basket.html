@@ -39,8 +39,10 @@
                             <div id="pizzas-text" class="col">Büyük Boy</div>
                         {% elif item.size == '2' %}
                             <div id="pizzas-text" class="col">Orta Boy</div>
-                        {% else %}
+                        {% elif item.size == '1' %}
                             <div id="pizzas-text" class="col">Küçük Boy</div>
+                        {% else %}
+                            <div id="pizzas-text" class="col">-</div>
                         {% endif %}
                         <div id="pizzas-text" class="col"><a class="text-muted" href="{% url 'basket:updateReducePiece' item.id %}">-</a> {{item.piece}} <a class="text-muted" href="{% url 'basket:updateAddPiece' item.id %}">+</a></div>
                         <div id="pizzas-text" class="col">{{pizza.price}} TL<a href="{% url 'basket:removeItem' item.id %}" class="close">&#10005;</a></div>

@@ -164,7 +164,7 @@ def myOrders(request):
 
     """
     form = OrderRatings(request.POST or None)
-    qy = OrderPizza.objects.filter(userId=request.user.id)
+    qy = OrderPizza.objects.filter(user=request.user)
     productsIds = []
     orders = []
     categoryIds = []

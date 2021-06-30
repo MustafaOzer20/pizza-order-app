@@ -9,17 +9,17 @@ SIZE_CHOICES = (
 
 
 class BasketForm(forms.Form):
-    piece = forms.IntegerField(min_value=1, max_value=100, label="Adet")
+    piece = forms.IntegerField(min_value=1, max_value=20, label="Adet")
     size = forms.ChoiceField(choices=SIZE_CHOICES, label="Boy", help_text="Küçük Boy -15TL ----- Orta Boy -10TL")
 
 class CampaignBasketForm(forms.Form):
-    piece = forms.IntegerField(min_value=1, max_value=10, label="Adet")
+    piece = forms.IntegerField(min_value=1, max_value=20, label="Adet")
 
 
 PAYMETHOD_CHOICES = (
-    ("1", "Kapıda Ödeme(Nakit)"),
-    ("2", "Kapıda Ödeme(Kart)"),
-    ("3", "Online Ödeme"),
+    ("Kapıda Ödeme(Nakit)", "Kapıda Ödeme(Nakit)"),
+    ("Kapıda Ödeme(Kart)", "Kapıda Ödeme(Kart)"),
+    ("Online Ödeme", "Online Ödeme"),
 )
 class OrderForm(forms.Form):
     adress = forms.CharField(max_length=300, label="Adres Bilgisi")
